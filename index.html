@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kas Fasilitator Magelang - Laporan Kas</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📒 Kas Fasilitator Magelang</h1>
+            <p>Pencatatan Kas Masuk/Keluar | Rekapan Bulanan | Multi Bulan | Grafik Trend</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>💼 Total Saldo Kas</h3>
+                <div class="value" id="totalSaldo">Rp0</div>
+            </div>
+            <div class="stat-card">
+                <h3>📈 Total Kas Masuk</h3>
+                <div class="value" id="totalMasuk">Rp0</div>
+            </div>
+            <div class="stat-card">
+                <h3>📉 Total Kas Keluar</h3>
+                <div class="value" id="totalKeluar">Rp0</div>
+            </div>
+            <div class="stat-card">
+                <h3>👥 Fasilitator Aktif</h3>
+                <div class="value" id="jumlahFasilitator">70</div>
+            </div>
+        </div>
+
+        <!-- Form Transaksi -->
+        <div class="form-panel">
+            <h3>📝 Form Transaksi</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>👤 Fasilitator</label>
+                    <select id="namaSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label>💰 Nominal (Rp)</label>
+                    <input type="number" id="nominalInput" value="10000" step="10000">
+                    <div class="nominal-buttons">
+                        <button type="button" class="btn-nominal" data-nom="10000">10rb</button>
+                        <button type="button" class="btn-nominal" data-nom="20000">20rb</button>
+                        <button type="button" class="btn-nominal" data-nom="50000">50rb</button>
+                        <button type="button" class="btn-nominal" data-nom="100000">100rb</button>
+                        <button type="button" class="btn-nominal" data-nom="250000">250rb</button>
+                        <button type="button" class="btn-nominal" data-nom="500000">500rb</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>📝 Keterangan</label>
+                    <input type="text" id="keteranganInput" placeholder="Iuran bulanan, transport, dll">
+                </div>
+                <div class="form-group">
+                    <label>📅 Bulan Transaksi</label>
+                    <input type="month" id="bulanTransaksi">
+                </div>
+                <div class="form-group">
+                    <button id="btnKasMasuk" class="btn-success">➕ Kas Masuk</button>
+                    <button id="btnKasKeluar" class="btn-danger">➖ Kas Keluar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daftar Fasilitator & Saldo -->
+        <div class="table-wrapper">
+            <div class="section-header">
+                <h3>📋 Daftar Fasilitator & Saldo</h3>
+                <div class="search-box">
+                    <input type="text" id="searchFasilitator" placeholder="🔍 Cari fasilitator..." class="search-input">
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="fasilitatorTable">
+                    <thead>
+                        <tr><th>No</th><th>Nama Fasilitator</th><th>Saldo Kas (Rp)</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Laporan Bulanan (Multi Select) -->
+        <div class="laporan-panel">
+            <h3>📊 Laporan Rekapan Multi Bulan</h3>
+            <div class="laporan-controls">
+                <div class="multi-select-group">
+                    <label>📅 Pilih Bulan (Ctrl+Click untuk multi select)</label>
+                    <select id="bulanMultiSelect" multiple size="5" class="multi-select"></select>
+                    <div class="multi-select-buttons">
+                        <button id="selectAllBulan" class="btn-mini">✅ Pilih Semua</button>
+                        <button id="clearBulan" class="btn-mini">❌ Hapus Pilihan</button>
+                    </div>
+                </div>
+                <div class="laporan-actions">
+                    <button id="viewReportBtn" class="btn-primary">👁️ Tampilkan Rekapan</button>
+                    <button id="printReportBtn" class="btn-secondary">🖨️ Cetak / PDF</button>
+                    <button id="exportReportBtn" class="btn-secondary">📎 Export CSV</button>
+                </div>
+            </div>
+            <div id="reportResult" class="report-result"></div>
+            <div class="chart-container">
+                <canvas id="reportChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Grafik Trend Bulanan -->
+        <div class="trend-panel">
+            <h3>📈 Trend Kas Bulanan</h3>
+            <div class="trend-controls">
+                <select id="trendYear" class="year-select"></select>
+                <button id="refreshTrendBtn" class="btn-primary">Refresh Grafik</button>
+                <button id="exportTrendBtn" class="btn-secondary">📎 Export Trend CSV</button>
+            </div>
+            <canvas id="trendChart" width="800" height="300"></canvas>
+        </div>
+
+        <!-- Grafik Top Fasilitator -->
+        <div class="top-panel">
+            <h3>🏆 Top 10 Fasilitator (Berdasarkan Iuran)</h3>
+            <canvas id="topChart" width="800" height="300"></canvas>
+        </div>
+
+        <!-- Riwayat Transaksi -->
+        <div class="riwayat-panel">
+            <h3>📜 Riwayat Transaksi Terbaru</h3>
+            <div class="riwayat-list" id="riwayatList"></div>
+            <div class="riwayat-actions">
+                <button id="clearHistoryBtn" class="btn-danger-mini">🗑 Bersihkan Semua Riwayat</button>
+                <button id="exportHistoryBtn" class="btn-secondary-mini">📎 Export Riwayat CSV</button>
+            </div>
+        </div>
+
+        <!-- Tombol Reset Data -->
+        <div class="reset-panel">
+            <button id="resetDataBtn" class="btn-danger">⚠️ Reset Semua Data (Saldo 0 & Hapus Riwayat)</button>
+        </div>
+
+        <footer>
+            <p>📌 Data tersimpan di localStorage browser Anda | Export CSV untuk backup | Multi bulan = pilih beberapa bulan sekaligus (Ctrl+Click)</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

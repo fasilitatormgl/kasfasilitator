@@ -1,169 +1,671 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kas Fasilitator Magelang</title>
-
-<style>
-body {
-    font-family: system-ui;
-    background:#f1f5f9;
-    padding:20px;
-}
-.card {
-    background:white;
-    padding:20px;
-    border-radius:20px;
-    margin-bottom:20px;
-}
-button {
-    padding:8px 14px;
-    border:none;
-    border-radius:20px;
-    background:#1e6f5c;
-    color:white;
-    cursor:pointer;
-}
-.secondary { background:#94a3b8; }
-table {
-    width:100%;
-    border-collapse:collapse;
-}
-td, th {
-    padding:8px;
-    border-bottom:1px solid #ddd;
-    text-align:center;
-}
-.sudah {
-    background:#3b82f6;
-    color:white;
-    padding:4px 10px;
-    border-radius:10px;
-}
-.belum {
-    background:#ef4444;
-    color:white;
-    padding:4px 10px;
-    border-radius:10px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kas Fasilitator Magelang | Iuran Rp10.000 | Rekap Tahunan Matrix</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            border-radius: 24px;
+            padding: 1rem 1.8rem;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 {
+            font-size: 1.6rem;
+            margin: 0;
+            color: #0f3b2c;
+        }
+        .sub {
+            color: #2c5f4e;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .badge {
+            background: #e6f7f0;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            color: #2d3e50;
+        }
+        .tab-btn.active {
+            background: #1e6f5c;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border-left: 5px solid #1e6f5c;
+            padding-left: 16px;
+        }
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #334155;
+        }
+        select, input, button {
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 0.9rem;
+        }
+        button {
+            background: #1e6f5c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.15s;
+        }
+        button.secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+        }
+        button.danger {
+            background: #dc2626;
+        }
+        button.warning {
+            background: #f59e0b;
+        }
+        button.small {
+            padding: 5px 12px;
+            font-size: 0.8rem;
+        }
+        button:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .lunas {
+            background: #c6f7e2;
+            color: #0b4d3a;
+        }
+        .belum {
+            background: #ffe2e2;
+            color: #b91c1c;
+        }
+        .checkbox-style {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #1e6f5c;
+        }
+        .scrollable-table {
+            overflow-x: auto;
+            max-height: 550px;
+            overflow-y: auto;
+            border-radius: 16px;
+            border: 1px solid #eef2f6;
+        }
+        .info-text {
+            font-size: 0.8rem;
+            color: #4b5563;
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 16px;
+            margin-top: 16px;
+        }
+        .grid-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .search-box {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-box input {
+            flex: 1;
+            min-width: 200px;
+        }
+        .total-box {
+            background: #f1f5f9;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .confirm-bar {
+            background: #fef9e3;
+            border-left: 4px solid #f59e0b;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        /* Matrix styles */
+        .matrix-container {
+            overflow-x: auto;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            margin-bottom: 2rem;
+        }
+        .matrix-table {
+            min-width: 800px;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .matrix-table th, .matrix-table td {
+            border: 1px solid #e2e8f0;
+            padding: 10px 6px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .matrix-table th {
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .matrix-table th:first-child {
+            background: #0f3b2c;
+            position: sticky;
+            left: 0;
+            z-index: 20;
+        }
+        .matrix-table td:first-child {
+            background: #fefce8;
+            font-weight: 600;
+            text-align: left;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            box-shadow: 2px 0 5px -2px rgba(0,0,0,0.1);
+        }
+        .status-sudah {
+            background-color: #b8e1fc;
+            color: #004080;
+            font-weight: bold;
+            border-radius: 20px;
+            display: inline-block;
+            padding: 5px 12px;
+            min-width: 70px;
+        }
+        .status-belum {
+            background-color: #ffcdd2;
+            color: #b71c1c;
+            font-weight: bold;
+            border-radius: 20px;
+            display: inline-block;
+            padding: 5px 12px;
+            min-width: 70px;
+        }
+        .summary-stats {
+            background: #f1f5f9;
+            border-radius: 24px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: space-between;
+        }
+        .stat-card {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 180px;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #475569;
+        }
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0f3b2c;
+        }
+        .monthly-summary-table th {
+            background: #e6f7f0;
+            color: #1e293b;
+        }
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        @media (max-width: 720px) {
+            body { padding: 12px; }
+            .matrix-table { font-size: 0.7rem; }
+            .matrix-table td, .matrix-table th { padding: 6px 3px; }
+            .status-sudah, .status-belum { padding: 2px 6px; min-width: 50px; font-size: 0.7rem; }
+        }
+    </style>
 </head>
-
 <body>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>📋 Kas Fasilitator Magelang</h1>
+            <div class="sub">Iuran per orang per bulan: <strong>Rp10.000</strong> • Total Fasilitator: <span id="totalFasilitatorCount">0</span> orang</div>
+        </div>
+        <div class="badge">🗺️ Batch Input • Matrix Tahunan • Rekap Lengkap</div>
+    </div>
 
-<div class="card">
-    <h2>📋 Kas Fasilitator</h2>
-    <input type="month" id="bulan">
-    <button onclick="loadData()">Load</button>
-    <button onclick="saveData()">Simpan</button>
-</div>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="payment">💰 Catat Iuran per Bulan</button>
+        <button class="tab-btn" data-tab="rekap">📊 Rekap & Laporan</button>
+        <button class="tab-btn" data-tab="matrix">📆 Matrix Tahunan (SUDAH/BELUM)</button>
+        <button class="tab-btn" data-tab="batch">📂 Batch & Spreadsheet</button>
+    </div>
 
-<div class="card">
-    <h3>💰 Input Iuran</h3>
-    <table id="tabel"></table>
-</div>
+    <!-- TAB 1: Pencatatan Iuran dengan Select All & Kas Keluar -->
+    <div id="paymentTab" class="tab-content">
+        <div class="card">
+            <div class="card-title">💰 Iuran Bulanan (Rp10.000/orang)</div>
+            <div class="flex-row">
+                <div class="form-group">
+                    <label>Pilih Bulan (Tahun-Bulan)</label>
+                    <input type="month" id="monthPicker" value="2026-01">
+                </div>
+                <button id="loadPaymentBtn">📋 Muat Data Bulan Ini</button>
+                <button id="selectAllBtn" class="secondary">✅ Select All (Bayar Semua)</button>
+                <button id="unselectAllBtn" class="secondary">❌ Unselect All (Batal Semua)</button>
+                <button id="kasKeluarBtn" class="warning">💰 Kas Keluar (Tarik Dana)</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchPayment" placeholder="Cari nama fasilitator..." style="border-radius:40px;">
+            </div>
+            <div id="confirmBar" class="confirm-bar" style="display: none;">
+                <span>⚠️ Ada perubahan pada checklist. Simpan perubahan?</span>
+                <div>
+                    <button id="confirmSaveBtn" style="background:#1e6f5c;">✅ Simpan</button>
+                    <button id="cancelChangesBtn" class="secondary" style="margin-left:8px;">Batal</button>
+                </div>
+            </div>
+            <div class="scrollable-table">
+                <table id="paymentTable">
+                    <thead><tr><th style="width:50px"><input type="checkbox" id="headerCheckbox" title="Pilih semua"></th><th>No</th><th>Nama Lengkap</th><th>Status Bayar</th><th>Nominal (Rp)</th></tr></thead>
+                    <tbody id="paymentTbody"></tbody>
+                </table>
+            </div>
+            <div class="info-text">✅ Centang checklist untuk menandai LUNAS (Rp10.000). Simpan di bar kuning. Select All untuk bayar semua.</div>
+        </div>
+    </div>
 
-<div class="card">
-    <h3>📅 Rekap Tahunan</h3>
-    <input type="number" id="tahun" value="2026">
-    <button onclick="rekap()">Tampilkan</button>
-    <button onclick="exportCSV()">Export CSV</button>
-    <table id="rekap"></table>
-    <div id="summary"></div>
+    <!-- TAB 2: REKAP per BULAN (sudah bayar / belum) -->
+    <div id="rekapTab" class="tab-content" style="display:none;">
+        <div class="card">
+            <div class="card-title">📊 Rekap Iuran per Bulan</div>
+            <div class="flex-row">
+                <div class="form-group"><label>Pilih Bulan</label><input type="month" id="rekapMonthPicker" value="2026-01"></div>
+                <button id="loadRekapBtn">📋 Tampilkan Rekap</button>
+                <button id="exportRekapBtn" class="secondary">📎 Export CSV Rekap Bulan Ini</button>
+            </div>
+            <div class="scrollable-table"><table id="rekapTable"><thead><tr><th>No</th><th>Nama Fasilitator</th><th>Status</th><th>Nominal Dibayar</th><th>Keterangan</th></tr></thead><tbody id="rekapTbody"></tbody></table></div>
+            <div class="info-text" id="rekapSummary"></div>
+        </div>
+    </div>
+
+    <!-- TAB 3: MATRIX TAHUNAN (SUDAH/BELUM per bulan, Biru/Merah) -->
+    <div id="matrixTab" class="tab-content" style="display:none;">
+        <div class="card">
+            <div class="card-title">📅 Matrix Tahunan Iuran Fasilitator</div>
+            <div class="flex-row">
+                <div class="form-group"><label>Pilih Tahun</label>
+                    <select id="matrixYearSelect"><option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option></select>
+                </div>
+                <button id="generateMatrixBtn">📊 Tampilkan Matrix Tahunan</button>
+                <button id="exportMatrixBtn" class="secondary">📎 Export Matrix ke CSV</button>
+                <button id="refreshMatrixBtn" class="secondary">🔄 Refresh</button>
+            </div>
+            <!-- Total anggaran tahun ini & semua -->
+            <div id="matrixTotalsPanel" class="summary-stats"></div>
+            <!-- Matrix utama: Nama | JAN | FEB | MAR ... DES -->
+            <div class="matrix-container">
+                <table class="matrix-table" id="annualMatrixTable">
+                    <thead id="matrixHeader"></thead>
+                    <tbody id="matrixBody"></tbody>
+                </table>
+            </div>
+            <!-- Tabel Ringkasan per Bulan: Iuran Masuk, Kas Keluar, Keterangan, Net -->
+            <div class="card-title" style="margin-top: 1rem;">📋 Rincian Kas per Bulan (Iuran Masuk & Kas Keluar)</div>
+            <div class="scrollable-table">
+                <table class="monthly-summary-table" id="monthlyKasTable" style="width:100%">
+                    <thead><tr><th>Bulan</th><th>Total Iuran Masuk (Rp)</th><th>Total Kas Keluar (Rp)</th><th>Keterangan Kas Keluar</th><th>Net Saldo Bulan (Rp)</th></tr></thead>
+                    <tbody id="monthlyKasTbody"></tbody>
+                </table>
+            </div>
+            <div class="info-text">🔵 Biru = SUDAH BAYAR &nbsp;&nbsp; 🔴 Merah = BELUM BAYAR. Data kas keluar diambil dari riwayat transaksi. Total anggaran dihitung otomatis.</div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Batch & Spreadsheet -->
+    <div id="batchTab" class="tab-content" style="display:none;">
+        <div class="card">
+            <div class="card-title">📁 Integrasi Spreadsheet (CSV)</div>
+            <p>Gunakan CSV untuk update massal atau backup. Edit di Excel / Google Sheets lalu impor kembali.</p>
+            <div class="grid-actions">
+                <button id="exportAllPaymentsBtn">📎 Ekspor SEMUA Pembayaran (Semua Bulan)</button>
+                <button id="exportAllFacilitatorsBtn" class="secondary">📇 Ekspor Data Fasilitator</button>
+                <label for="importAllPaymentsFile" class="secondary" style="background:#e2e8f0; padding:8px 14px; border-radius:40px; cursor:pointer;">📂 Impor Pembayaran (CSV)</label>
+                <input type="file" id="importAllPaymentsFile" accept=".csv" style="display:none;">
+                <label for="importFacilitatorFile" class="secondary" style="background:#e2e8f0; padding:8px 14px; border-radius:40px; cursor:pointer;">📂 Impor Daftar Fasilitator</label>
+                <input type="file" id="importFacilitatorFile" accept=".csv" style="display:none;">
+                <button id="resetDefaultDataBtn" class="secondary">🔄 Reset ke Data Default</button>
+            </div>
+            <div class="info-text">📌 Format Impor Pembayaran: bulan (YYYY-MM), nama_fasilitator, status (LUNAS/BELUM)<br>📌 Semua data tersimpan di localStorage.</div>
+        </div>
+    </div>
+    <footer>Aplikasi Kas Fasilitator Magelang | Data tersimpan di perangkat Anda | Matrix menampilkan SUDAH (biru) / BELUM (merah) sepanjang tahun</footer>
 </div>
 
 <script>
-const nama = [
-"Chandra Tribawono","Fasilitator 2","Fasilitator 3"
-];
+    // ======================= DATA DEFAULT LENGKAP =======================
+    const DEFAULT_FACILITATORS_DATA = [
+        "Muhammad Rajasa Danny Alamsyah, S.H.", "Ardy Hudhatama, S.Pd.", "Ardian Dwi Chandra, S.M.", "Kharisma Putri Pertiwi, A.Md.T",
+        "Nurul Afifa Dian Segari, S.P", "Febrian Agus Partomo, S.Sos.", "Haning Karunia Putra, A.Md.Ak.", "Aulia Trisna Agustin, S.H.",
+        "Didik Subiyantoro, S.E.", "Febriana Dewi Utami, S.H.", "Ida Kumia Kalpikaratri, S.Pd.", "Dhevi Arishandy, S.P.",
+        "Wreksaningrum Agung Prasetyawati Supiyo, S.Psi.", "Agung Dian Saputra, S.E.", "Ghina Fauzia Rafidah, S.Pd.", "Muchammad Fawaid Mubarok, S.Sos.",
+        "Andi Hendra Saputra Gaffar, A.Md.Kom", "Dian Septi Virgiani, S.E", "Henry Arif Wahyudi, S. Kom", "Muna Maajida Haryan Azhar, S.Ak",
+        "Daniel Anggraito, S.Kom.", "Enggar Saraswati, A.Md.Kep", "Novella Putri Prahardika, S.Si.", "Priyo Widiatmoko, S.E.",
+        "Rafidha Aliy Rachmani, S.M.", "Dewi Utari Wahyuningtyas, S.S.T", "Ivan Adi Prabowo, S.P.", "Nindhitya Mega Putri Syaharani, S.H",
+        "Anisa Tri Ambarwati, S.Pd.", "Priska Wijayanti, S.S.", "Dewi Rosita, S.M.", "Dwi Sekar Novianingrum, S.Sos.",
+        "Vicenco Putra Astono, S.Pd.", "Briliant Oliviera, S.Pd.", "Denny Susila Andriyana, S.Pd.", "Refita Aqdwirida, S.Pd.",
+        "Dhika Santi Apriliati, A.Md. Kep.", "Nur Alfian Farandhika, S.Pd.", "Usamah Abdul Hanif, S.E.", "Nova Puspitasari, S.Psi.",
+        "Herawan Gagah Widigdo, S.E.", "Wiwit Nakhiyah, A.Md.Kep.", "Deby Liany Sasongko, S.I.Kom.", "Edo Aditya Putra, S.E.",
+        "Dinda Ayu Rosa Loren, S.H.", "Nita Agustin, A.Md.Stat.", "Rhesa Albinhassan Philorona, S.E", "Shafa Alika Tolti Mayvia, S.I.Kom.",
+        "Chandra Tribawono, S.Pd.", "Siska Tiara Dewi, S.E", "Laili Yustighfar F., S.E.", "Hayu Ambar Pratiwi, S.Sos.",
+        "Nurul Hikmah, S.Kom.", "Syahriza Aldi Rois, S.E.", "Avissa Tsurayya, S.H.", "Aditya Budi Setiawan, S. T.",
+        "Aura Mellenia Imani, A.Md.Ak.", "Elifa Fenny Rahayu, S.M.", "Eky Katharinella Kumiarum, S.E.", "Alivia Nurul Hikma, S.Sos",
+        "Eka Dyah Astuti, S.Sos.", "Rizky Agung Pambudi, S.S.", "Rina Mawarinda, S.Pd", "Yeni Nurul Utami, ST.",
+        "Zaenal Arifin, S.T.", "Wahyu Galih Saputra, S.H.", "Lia Shabilla, S.Sos.", "Vega Sofle Kharisrma Putri, S.M.",
+        "Clarisa Sasti Bintoro, S.E.", "Kalpataru Muda Fathlka, S.E."
+    ];
 
-let data = JSON.parse(localStorage.getItem("kas")||"{}");
-let kasKeluar = JSON.parse(localStorage.getItem("keluar")||"[]");
+    let facilitators = [];      // { id, name }
+    let payments = {};          // "YYYY-MM" -> [{ facilitatorId, status, amount }]
+    let pendingChanges = null;
+    let currentMonthKey = "";
+    const DEFAULT_AMOUNT = 10000;
+    const STORAGE_KEYS = { FACILITATORS: 'kas_facilitators_magelang_simple', PAYMENTS: 'kas_payments_magelang_simple' };
 
-function loadData(){
-    let bulan = document.getElementById("bulan").value;
-    let tbl = document.getElementById("tabel");
-    tbl.innerHTML="<tr><th>Nama</th><th>Status</th></tr>";
+    function saveFacilitators() { localStorage.setItem(STORAGE_KEYS.FACILITATORS, JSON.stringify(facilitators)); updateTotalCount(); }
+    function savePayments() { localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments)); }
+    function updateTotalCount() { const countEl = document.getElementById('totalFasilitatorCount'); if(countEl) countEl.innerText = facilitators.length; }
 
-    nama.forEach(n=>{
-        let key = bulan+"-"+n;
-        let status = data[key];
+    function initDefaultFacilitators() {
+        facilitators = DEFAULT_FACILITATORS_DATA.map((name, idx) => ({ id: idx + 1, name: name }));
+        saveFacilitators();
+    }
 
-        tbl.innerHTML += `
-        <tr>
-            <td>${n}</td>
-            <td>
-                <input type="checkbox" ${status?"checked":""}
-                onchange="data['${key}']=this.checked">
-            </td>
-        </tr>`;
-    });
-}
+    function loadData() {
+        const storedFac = localStorage.getItem(STORAGE_KEYS.FACILITATORS);
+        if (storedFac) { facilitators = JSON.parse(storedFac); if (!facilitators.length) initDefaultFacilitators(); } 
+        else { initDefaultFacilitators(); }
+        const storedPay = localStorage.getItem(STORAGE_KEYS.PAYMENTS);
+        if (storedPay) payments = JSON.parse(storedPay); else payments = {};
+        savePayments(); updateTotalCount();
+    }
 
-function saveData(){
-    localStorage.setItem("kas",JSON.stringify(data));
-    alert("Tersimpan");
-}
+    function getMonthPayments(monthKey) {
+        if (!payments[monthKey]) payments[monthKey] = facilitators.map(f => ({ facilitatorId: f.id, status: false, amount: 0 }));
+        return payments[monthKey];
+    }
 
-function rekap(){
-    let tahun = document.getElementById("tahun").value;
-    let tbl = document.getElementById("rekap");
+    function applyPendingChanges() { if(pendingChanges){ let {monthKey, updates}=pendingChanges; let monthData=payments[monthKey] || facilitators.map(f=>({facilitatorId:f.id,status:false,amount:0})); updates.forEach(u=>{ let rec=monthData.find(p=>p.facilitatorId===u.facilitatorId); if(rec){ rec.status=u.newStatus; rec.amount=u.newStatus?DEFAULT_AMOUNT:0; } }); payments[monthKey]=monthData; savePayments(); pendingChanges=null; document.getElementById('confirmBar').style.display='none'; } }
+    function discardPendingChanges(){ pendingChanges=null; document.getElementById('confirmBar').style.display='none'; renderPaymentTable(currentMonthKey); }
+    function addPendingUpdate(facilitatorId,newStatus){ if(!pendingChanges) pendingChanges={monthKey:currentMonthKey,updates:[]}; let ex=pendingChanges.updates.find(u=>u.facilitatorId===facilitatorId); if(ex) ex.newStatus=newStatus; else pendingChanges.updates.push({facilitatorId,newStatus}); document.getElementById('confirmBar').style.display='flex'; }
 
-    let bulan = ["01","02","03","04","05","06","07","08","09","10","11","12"];
-
-    tbl.innerHTML="<tr><th>Nama</th>"+bulan.map(b=>"<th>"+b+"</th>").join("")+"</tr>";
-
-    let totalMasuk=0;
-
-    nama.forEach(n=>{
-        let row="<tr><td>"+n+"</td>";
-
-        bulan.forEach(b=>{
-            let key=tahun+"-"+b+"-"+n;
-            let s=data[key];
-
-            if(s) totalMasuk+=10000;
-
-            row+=`<td><span class="${s?'sudah':'belum'}">${s?'SUDAH':'BELUM'}</span></td>`;
-        });
-
-        row+="</tr>";
-        tbl.innerHTML+=row;
-    });
-
-    let keluar = kasKeluar
-        .filter(k=>k.tanggal.startsWith(tahun))
-        .reduce((a,b)=>a+b.nominal,0);
-
-    document.getElementById("summary").innerHTML=`
-    💰 Masuk: Rp${totalMasuk.toLocaleString()}<br>
-    💸 Keluar: Rp${keluar.toLocaleString()}<br>
-    🧮 Saldo: Rp${(totalMasuk-keluar).toLocaleString()}
-    `;
-}
-
-function exportCSV(){
-    let csv="Nama,Jan,Feb,Mar,Apr,Mei,Jun,Jul,Ags,Sep,Okt,Nov,Des\n";
-    let tahun=document.getElementById("tahun").value;
-
-    nama.forEach(n=>{
-        let row=[n];
-        for(let i=1;i<=12;i++){
-            let b=i.toString().padStart(2,"0");
-            let key=tahun+"-"+b+"-"+n;
-            row.push(data[key]?"SUDAH":"BELUM");
+    // render payment tab (existing)
+    function renderPaymentTable(monthKey) {
+        currentMonthKey=monthKey; let tbody=document.getElementById('paymentTbody'); if(!tbody||!facilitators.length) return;
+        let searchTerm=document.getElementById('searchPayment')?.value.toLowerCase()||'';
+        let filteredFac=facilitators.filter(f=>f.name.toLowerCase().includes(searchTerm));
+        let originalMonthData=getMonthPayments(monthKey);
+        let statusMapOrig=new Map(originalMonthData.map(p=>[p.facilitatorId,p.status]));
+        let displayStatus=new Map(); facilitators.forEach(f=>{ let s=statusMapOrig.get(f.id)||false; if(pendingChanges&&pendingChanges.monthKey===monthKey){ let pn=pendingChanges.updates.find(u=>u.facilitatorId===f.id); if(pn) s=pn.newStatus; } displayStatus.set(f.id,s); });
+        tbody.innerHTML='';
+        filteredFac.forEach((f,idx)=>{ let isPaid=displayStatus.get(f.id); let row=tbody.insertRow(); let chkCell=row.insertCell(0); let chk=document.createElement('input'); chk.type='checkbox'; chk.checked=isPaid; chk.className='checkbox-style'; chk.addEventListener('change',(e)=>{ addPendingUpdate(f.id,e.target.checked); let newStat=e.target.checked; let labelSpan=row.querySelector('.status-span'); if(labelSpan){ labelSpan.innerText=newStat?' LUNAS':' BELUM'; labelSpan.className=`status-badge ${newStat?'lunas':'belum'} status-span`; } let nominalSpan=row.querySelector('.nominal-span'); if(nominalSpan) nominalSpan.innerText=newStat?`Rp${DEFAULT_AMOUNT.toLocaleString()}`:'Rp0'; }); chkCell.appendChild(chk); row.insertCell(1).innerText=idx+1; row.insertCell(2).innerText=f.name; let statusCell=row.insertCell(3); let labelSpan=document.createElement('span'); labelSpan.innerText=isPaid?' LUNAS':' BELUM'; labelSpan.className=`status-badge ${isPaid?'lunas':'belum'} status-span`; statusCell.appendChild(labelSpan); let nominalCell=row.insertCell(4); let nominalSpan=document.createElement('span'); nominalSpan.innerText=isPaid?`Rp${DEFAULT_AMOUNT.toLocaleString()}`:'Rp0'; nominalSpan.className='nominal-span'; nominalCell.appendChild(nominalSpan); });
+        let allCbs=document.querySelectorAll('#paymentTbody input[type="checkbox"]'); let headerChk=document.getElementById('headerCheckbox'); if(headerChk){ let allChecked=allCbs.length>0&&Array.from(allCbs).every(cb=>cb.checked); headerChk.checked=allChecked; headerChk.indeterminate=!allChecked&&Array.from(allCbs).some(cb=>cb.checked); }
+    }
+    function selectAll(checked){ if(!facilitators.length) return; let updates=facilitators.map(f=>({facilitatorId:f.id,newStatus:checked})); pendingChanges={monthKey:currentMonthKey,updates}; document.getElementById('confirmBar').style.display='flex'; renderPaymentTable(currentMonthKey); }
+    function kasKeluar(){ let nominal=prompt("Masukkan nominal Kas Keluar (Rp):","0"); if(nominal===null) return; let amount=parseInt(nominal.replace(/\./g,''))||0; if(amount<=0){ alert("Nominal > 0"); return; } let keterangan=prompt("Keterangan Kas Keluar:","Pengeluaran")||"-"; let history=JSON.parse(localStorage.getItem('kas_keluar_history')||'[]'); history.push({ tanggal:new Date().toISOString(), bulan:currentMonthKey, nominal:amount, keterangan }); localStorage.setItem('kas_keluar_history',JSON.stringify(history)); let monthData=getMonthPayments(currentMonthKey); let totalIuran=monthData.filter(p=>p.status).length*DEFAULT_AMOUNT; alert(`💰 Kas Keluar: Rp${amount.toLocaleString()}\nKeterangan: ${keterangan}\nTotal Iuran Bulan Ini: Rp${totalIuran.toLocaleString()}\nSisa Kas: Rp${(totalIuran-amount).toLocaleString()}`); }
+    
+    // REKAP BULANAN
+    function renderRekap(monthKey){ let tbody=document.getElementById('rekapTbody'); if(!tbody) return; let monthData=getMonthPayments(monthKey); let statusMap=new Map(monthData.map(p=>[p.facilitatorId,p.status])); let lunasCount=0; tbody.innerHTML=''; facilitators.forEach((f,idx)=>{ let isPaid=statusMap.get(f.id)||false; if(isPaid) lunasCount++; let row=tbody.insertRow(); row.insertCell(0).innerText=idx+1; row.insertCell(1).innerText=f.name; row.insertCell(2).innerHTML=`<span class="status-badge ${isPaid?'lunas':'belum'}">${isPaid?'LUNAS':'BELUM'}</span>`; row.insertCell(3).innerText=isPaid?`Rp${DEFAULT_AMOUNT.toLocaleString()}`:'Rp0'; row.insertCell(4).innerText=isPaid?'Sudah bayar':'Belum bayar'; }); let totalIuran=lunasCount*DEFAULT_AMOUNT; let summaryDiv=document.getElementById('rekapSummary'); summaryDiv.innerHTML=`<strong>📊 Rekap Bulan ${monthKey}</strong><br>Total Fasilitator: ${facilitators.length} | Sudah Bayar: ${lunasCount} orang | Belum: ${facilitators.length-lunasCount}<br>Total Iuran Masuk: Rp${totalIuran.toLocaleString()}`; let kasHistory=JSON.parse(localStorage.getItem('kas_keluar_history')||'[]'); let bulanIni=kasHistory.filter(h=>h.bulan===monthKey); if(bulanIni.length){ let totalKeluar=bulanIni.reduce((s,h)=>s+h.nominal,0); summaryDiv.innerHTML+=`<br><span style="color:#f59e0b;">💸 Kas Keluar bulan ini: Rp${totalKeluar.toLocaleString()} (${bulanIni.length} transaksi)</span>`; } }
+    
+    // ==================== MATRIX TAHUNAN & ANGGARAN ====================
+    function getKasKeluarPerMonth(monthKey){ let history=JSON.parse(localStorage.getItem('kas_keluar_history')||'[]'); let filtered=history.filter(h=>h.bulan===monthKey); let total=filtered.reduce((s,h)=>s+h.nominal,0); let keterangan=filtered.map(h=>`${h.keterangan} (Rp${h.nominal.toLocaleString()})`).join('; ')||'-'; return {total, keterangan}; }
+    
+    function renderAnnualMatrix(year){
+        if(!facilitators.length) return;
+        const months=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        let monthlyIuran=new Array(12).fill(0);
+        let monthlyKasKeluar=new Array(12).fill(0);
+        let monthlyKeterangan=new Array(12).fill('-');
+        // build status per facilitator per month
+        let matrixData=[]; // each {facilitator, statusPerMonth:bool[]}
+        for(let f of facilitators){
+            let statusMonth=[];
+            for(let m=0;m<12;m++){
+                let monthKey=`${year}-${String(m+1).padStart(2,'0')}`;
+                let monthPayments=payments[monthKey] || [];
+                let record=monthPayments.find(p=>p.facilitatorId===f.id);
+                let isPaid=record?record.status:false;
+                statusMonth.push(isPaid);
+                if(isPaid) monthlyIuran[m]+=DEFAULT_AMOUNT;
+            }
+            matrixData.push({name:f.name, statuses:statusMonth});
         }
-        csv+=row.join(",")+"\n";
+        // kas keluar per bulan
+        for(let m=0;m<12;m++){
+            let monthKey=`${year}-${String(m+1).padStart(2,'0')}`;
+            let {total, keterangan}=getKasKeluarPerMonth(monthKey);
+            monthlyKasKeluar[m]=total;
+            monthlyKeterangan[m]=keterangan;
+        }
+        // Render header
+        let thead=document.getElementById('matrixHeader'); let tbody=document.getElementById('matrixBody');
+        thead.innerHTML=`<tr><th>Nama Fasilitator</th>${months.map(m=>`<th>${m}</th>`).join('')}</tr>`;
+        tbody.innerHTML='';
+        for(let row of matrixData){
+            let tr=document.createElement('tr');
+            let tdName=document.createElement('td'); tdName.innerText=row.name; tr.appendChild(tdName);
+            for(let i=0;i<row.statuses.length;i++){
+                let td=document.createElement('td');
+                let isPaid=row.statuses[i];
+                let span=document.createElement('span');
+                span.innerText=isPaid?'SUDAH':'BELUM';
+                span.className=isPaid?'status-sudah':'status-belum';
+                td.appendChild(span);
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+        // Hitung total tahun ini & all-time
+        let totalIuranTahunIni=monthlyIuran.reduce((a,b)=>a+b,0);
+        let totalKasKeluarTahunIni=monthlyKasKeluar.reduce((a,b)=>a+b,0);
+        let netTahunIni=totalIuranTahunIni-totalKasKeluarTahunIni;
+        // all-time totals
+        let allTimeIuran=0, allTimeKasKeluar=0;
+        for(let monthKey in payments){
+            let monthData=payments[monthKey];
+            let iuranMonth=monthData.filter(p=>p.status).length*DEFAULT_AMOUNT;
+            allTimeIuran+=iuranMonth;
+        }
+        let allKasHistory=JSON.parse(localStorage.getItem('kas_keluar_history')||'[]');
+        allTimeKasKeluar=allKasHistory.reduce((s,h)=>s+h.nominal,0);
+        let allTimeNet=allTimeIuran-allTimeKasKeluar;
+        // tampilkan panel stats
+        let panel=document.getElementById('matrixTotalsPanel');
+        panel.innerHTML=`
+            <div class="stat-card"><div class="stat-label">📅 TAHUN ${year} - IURAN MASUK</div><div class="stat-value">Rp ${totalIuranTahunIni.toLocaleString()}</div></div>
+            <div class="stat-card"><div class="stat-label">💸 TAHUN ${year} - KAS KELUAR</div><div class="stat-value">Rp ${totalKasKeluarTahunIni.toLocaleString()}</div></div>
+            <div class="stat-card"><div class="stat-label">⚖️ NET ANGGARAN ${year}</div><div class="stat-value">Rp ${netTahunIni.toLocaleString()}</div></div>
+            <div class="stat-card"><div class="stat-label">🌍 TOTAL IURAN (SEMUA WAKTU)</div><div class="stat-value">Rp ${allTimeIuran.toLocaleString()}</div></div>
+            <div class="stat-card"><div class="stat-label">💸 TOTAL KAS KELUAR (SEMUA)</div><div class="stat-value">Rp ${allTimeKasKeluar.toLocaleString()}</div></div>
+            <div class="stat-card"><div class="stat-label">🏦 NET KESELURUHAN</div><div class="stat-value">Rp ${allTimeNet.toLocaleString()}</div></div>
+        `;
+        // Tabel bulanan kas
+        let monthlyTbody=document.getElementById('monthlyKasTbody');
+        monthlyTbody.innerHTML='';
+        for(let m=0;m<12;m++){
+            let bulanNama=months[m];
+            let iuranMasuk=monthlyIuran[m];
+            let kasKeluar=monthlyKasKeluar[m];
+            let netBulan=iuranMasuk-kasKeluar;
+            let keterangan=monthlyKeterangan[m];
+            let row=monthlyTbody.insertRow();
+            row.insertCell(0).innerText=bulanNama+' '+year;
+            row.insertCell(1).innerText=`Rp ${iuranMasuk.toLocaleString()}`;
+            row.insertCell(2).innerText=`Rp ${kasKeluar.toLocaleString()}`;
+            row.insertCell(3).innerText=keterangan;
+            row.insertCell(4).innerText=`Rp ${netBulan.toLocaleString()}`;
+        }
+    }
+    
+    function exportMatrixCSV(year){
+        let months=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        let rows=[['Nama Fasilitator', ...months]];
+        for(let f of facilitators){
+            let rowData=[f.name];
+            for(let m=0;m<12;m++){
+                let monthKey=`${year}-${String(m+1).padStart(2,'0')}`;
+                let monthPayments=payments[monthKey]||[];
+                let record=monthPayments.find(p=>p.facilitatorId===f.id);
+                let status=record?.status?'SUDAH':'BELUM';
+                rowData.push(status);
+            }
+            rows.push(rowData);
+        }
+        // tambah baris info kas keluar
+        rows.push(['']); rows.push(['KETERANGAN KAS KELUAR PER BULAN']);
+        let kasRow=['Ringkasan'];
+        for(let m=0;m<12;m++){
+            let monthKey=`${year}-${String(m+1).padStart(2,'0')}`;
+            let {total,keterangan}=getKasKeluarPerMonth(monthKey);
+            kasRow.push(`Rp${total.toLocaleString()} (${keterangan.substring(0,30)})`);
+        }
+        rows.push(kasRow);
+        let csvContent=rows.map(r=>r.map(cell=>`"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+        let blob=new Blob(["\uFEFF"+csvContent],{type:"text/csv;charset=utf-8"}); let link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`matrix_tahunan_${year}.csv`; link.click(); URL.revokeObjectURL(link.href);
+    }
+    
+    // export CSV lainnya (tetap dari existing)
+    function exportAllPayments(){ let rows=[["bulan","nama_fasilitator","status","nominal"]]; for(let month in payments){ payments[month].forEach(p=>{ let fas=facilitators.find(f=>f.id===p.facilitatorId); if(fas) rows.push([month, fas.name, p.status?"LUNAS":"BELUM", p.status?DEFAULT_AMOUNT:0]); }); } downloadCSV(rows.map(r=>r.join(",")).join("\n"), "semua_iuran.csv"); }
+    function exportFacilitatorsCSV(){ let content="nama\n"+facilitators.map(f=>`"${f.name.replace(/"/g,'""')}"`).join("\n"); downloadCSV(content,"daftar_fasilitator.csv"); }
+    function exportRekapCSV(monthKey){ let monthData=getMonthPayments(monthKey); let statusMap=new Map(monthData.map(p=>[p.facilitatorId,p.status])); let rows=[["No","Nama Fasilitator","Status","Nominal"]]; facilitators.forEach((f,idx)=>{ let isPaid=statusMap.get(f.id)||false; rows.push([idx+1,f.name,isPaid?"LUNAS":"BELUM",isPaid?DEFAULT_AMOUNT:0]); }); downloadCSV(rows.map(r=>r.join(",")).join("\n"),`rekap_iuran_${monthKey}.csv`); }
+    function downloadCSV(content,filename){ const blob=new Blob(["\uFEFF"+content],{type:"text/csv;charset=utf-8"}); const link=document.createElement("a"); link.href=URL.createObjectURL(blob); link.download=filename; link.click(); URL.revokeObjectURL(link.href); }
+    function importFacilitatorsFromCSV(csvText){ let lines=csvText.split(/\r?\n/).filter(l=>l.trim()); let start=lines[0]?.toLowerCase().includes('nama')?1:0; let newNames=[]; for(let i=start;i<lines.length;i++){ let name=lines[i].trim().replace(/^"|"$/g,''); if(name) newNames.push(name); } if(newNames.length){ facilitators=newNames.map((name,idx)=>({id:idx+1,name})); saveFacilitators(); for(let m in payments){ payments[m]=payments[m].filter(p=>facilitators.some(f=>f.id===p.facilitatorId)); facilitators.forEach(f=>{ if(!payments[m].some(p=>p.facilitatorId===f.id)) payments[m].push({facilitatorId:f.id,status:false,amount:0}); }); } savePayments(); alert(`Import ${newNames.length} fasilitator`); if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(currentMonthKey); } else alert("CSV tidak valid"); }
+    function importPaymentsFromCSV(csvText){ let lines=csvText.split(/\r?\n/).filter(l=>l.trim()); if(lines.length<2) return; let updated=0; for(let i=1;i<lines.length;i++){ let parts=lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,'')); let bulan=parts[0], nama=parts[1], statusRaw=(parts[2]||'').toUpperCase(); let isLunas=statusRaw.includes('LUNAS')||statusRaw==='1'; let fas=facilitators.find(f=>f.name.toLowerCase()===nama.toLowerCase()); if(fas&&bulan){ if(!payments[bulan]) payments[bulan]=facilitators.map(f=>({facilitatorId:f.id,status:false,amount:0})); let rec=payments[bulan].find(p=>p.facilitatorId===fas.id); if(rec){ rec.status=isLunas; rec.amount=isLunas?DEFAULT_AMOUNT:0; updated++; } } } savePayments(); alert(`Impor selesai, ${updated} data diperbarui`); if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(currentMonthKey); }
+    function resetToDefault(){ if(confirm("Reset ke data default Magelang?")){ initDefaultFacilitators(); payments={}; savePayments(); if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(document.getElementById('monthPicker').value); if(document.querySelector('.tab-btn.active')?.dataset.tab==='matrix') renderAnnualMatrix(document.getElementById('matrixYearSelect').value); } }
+    
+    // EVENT LISTENERS
+    document.addEventListener('DOMContentLoaded',()=>{
+        loadData();
+        const tabs=document.querySelectorAll('.tab-btn'); const contents={ payment:document.getElementById('paymentTab'), rekap:document.getElementById('rekapTab'), matrix:document.getElementById('matrixTab'), batch:document.getElementById('batchTab') };
+        function switchTab(tabId){ Object.values(contents).forEach(c=>c.style.display='none'); contents[tabId].style.display='block'; tabs.forEach(btn=>btn.classList.remove('active')); document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active'); if(tabId==='payment') renderPaymentTable(document.getElementById('monthPicker').value); if(tabId==='rekap') renderRekap(document.getElementById('rekapMonthPicker').value); if(tabId==='matrix') renderAnnualMatrix(document.getElementById('matrixYearSelect').value); }
+        tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
+        document.getElementById('loadPaymentBtn').addEventListener('click',()=>renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('monthPicker').addEventListener('change',()=>renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('selectAllBtn').addEventListener('click',()=>selectAll(true)); document.getElementById('unselectAllBtn').addEventListener('click',()=>selectAll(false));
+        document.getElementById('kasKeluarBtn').addEventListener('click',kasKeluar); document.getElementById('confirmSaveBtn').addEventListener('click',()=>{ applyPendingChanges(); renderPaymentTable(currentMonthKey); }); document.getElementById('cancelChangesBtn').addEventListener('click',()=>{ discardPendingChanges(); renderPaymentTable(currentMonthKey); }); document.getElementById('headerCheckbox').addEventListener('change',(e)=>selectAll(e.target.checked)); document.getElementById('searchPayment').addEventListener('input',()=>renderPaymentTable(currentMonthKey));
+        document.getElementById('loadRekapBtn').addEventListener('click',()=>renderRekap(document.getElementById('rekapMonthPicker').value)); document.getElementById('rekapMonthPicker').addEventListener('change',()=>renderRekap(document.getElementById('rekapMonthPicker').value)); document.getElementById('exportRekapBtn').addEventListener('click',()=>exportRekapCSV(document.getElementById('rekapMonthPicker').value));
+        document.getElementById('generateMatrixBtn').addEventListener('click',()=>renderAnnualMatrix(document.getElementById('matrixYearSelect').value)); document.getElementById('exportMatrixBtn').addEventListener('click',()=>exportMatrixCSV(document.getElementById('matrixYearSelect').value)); document.getElementById('refreshMatrixBtn').addEventListener('click',()=>renderAnnualMatrix(document.getElementById('matrixYearSelect').value)); document.getElementById('matrixYearSelect').addEventListener('change',()=>renderAnnualMatrix(document.getElementById('matrixYearSelect').value));
+        document.getElementById('exportAllPaymentsBtn').addEventListener('click',exportAllPayments); document.getElementById('exportAllFacilitatorsBtn').addEventListener('click',exportFacilitatorsCSV);
+        document.getElementById('importAllPaymentsFile').addEventListener('change',e=>{ if(e.target.files[0]){ let reader=new FileReader(); reader.onload=ev=>{ importPaymentsFromCSV(ev.target.result); e.target.value=''; }; reader.readAsText(e.target.files[0],'UTF-8'); } });
+        document.getElementById('importFacilitatorFile').addEventListener('change',e=>{ if(e.target.files[0]){ let reader=new FileReader(); reader.onload=ev=>{ importFacilitatorsFromCSV(ev.target.result); e.target.value=''; }; reader.readAsText(e.target.files[0],'UTF-8'); } });
+        document.getElementById('resetDefaultDataBtn').addEventListener('click',resetToDefault);
+        renderPaymentTable('2026-01'); switchTab('payment');
     });
-
-    let blob=new Blob([csv]);
-    let a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download="rekap.csv";
-    a.click();
-}
 </script>
-
 </body>
 </html>

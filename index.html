@@ -3,152 +3,704 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kas Fasilitator Magelang - Laporan Kas</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Kas Fasilitator Magelang | Iuran Rp10.000</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            border-radius: 24px;
+            padding: 1rem 1.8rem;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 {
+            font-size: 1.6rem;
+            margin: 0;
+            color: #0f3b2c;
+        }
+        .sub {
+            color: #2c5f4e;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .badge {
+            background: #e6f7f0;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            color: #2d3e50;
+        }
+        .tab-btn.active {
+            background: #1e6f5c;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border-left: 5px solid #1e6f5c;
+            padding-left: 16px;
+        }
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #334155;
+        }
+        select, input, button {
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 0.9rem;
+        }
+        button {
+            background: #1e6f5c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.15s;
+        }
+        button.secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+        }
+        button.danger {
+            background: #dc2626;
+        }
+        button.small {
+            padding: 5px 12px;
+            font-size: 0.8rem;
+        }
+        button:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .lunas {
+            background: #c6f7e2;
+            color: #0b4d3a;
+        }
+        .belum {
+            background: #ffe2e2;
+            color: #b91c1c;
+        }
+        .checkbox-style {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #1e6f5c;
+        }
+        .scrollable-table {
+            overflow-x: auto;
+            max-height: 550px;
+            overflow-y: auto;
+            border-radius: 16px;
+            border: 1px solid #eef2f6;
+        }
+        .info-text {
+            font-size: 0.8rem;
+            color: #4b5563;
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 16px;
+            margin-top: 16px;
+        }
+        .grid-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .search-box {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-box input {
+            flex: 1;
+            min-width: 200px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        @media (max-width: 720px) {
+            body { padding: 12px; }
+            td, th { font-size: 0.75rem; padding: 8px 4px; }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>📒 Kas Fasilitator Magelang</h1>
-            <p>Pencatatan Kas Masuk/Keluar | Rekapan Bulanan | Multi Bulan | Grafik Trend</p>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>📋 Kas Fasilitator Magelang</h1>
+            <div class="sub">Iuran per orang per bulan: <strong>Rp10.000</strong> • Total Fasilitator: <span id="totalFasilitatorCount">0</span> orang</div>
         </div>
-
-        <!-- Stats Cards -->
-        <div class="stats">
-            <div class="stat-card">
-                <h3>💼 Total Saldo Kas</h3>
-                <div class="value" id="totalSaldo">Rp0</div>
-            </div>
-            <div class="stat-card">
-                <h3>📈 Total Kas Masuk</h3>
-                <div class="value" id="totalMasuk">Rp0</div>
-            </div>
-            <div class="stat-card">
-                <h3>📉 Total Kas Keluar</h3>
-                <div class="value" id="totalKeluar">Rp0</div>
-            </div>
-            <div class="stat-card">
-                <h3>👥 Fasilitator Aktif</h3>
-                <div class="value" id="jumlahFasilitator">70</div>
-            </div>
-        </div>
-
-        <!-- Form Transaksi -->
-        <div class="form-panel">
-            <h3>📝 Form Transaksi</h3>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>👤 Fasilitator</label>
-                    <select id="namaSelect"></select>
-                </div>
-                <div class="form-group">
-                    <label>💰 Nominal (Rp)</label>
-                    <input type="number" id="nominalInput" value="10000" step="10000">
-                    <div class="nominal-buttons">
-                        <button type="button" class="btn-nominal" data-nom="10000">10rb</button>
-                        <button type="button" class="btn-nominal" data-nom="20000">20rb</button>
-                        <button type="button" class="btn-nominal" data-nom="50000">50rb</button>
-                        <button type="button" class="btn-nominal" data-nom="100000">100rb</button>
-                        <button type="button" class="btn-nominal" data-nom="250000">250rb</button>
-                        <button type="button" class="btn-nominal" data-nom="500000">500rb</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>📝 Keterangan</label>
-                    <input type="text" id="keteranganInput" placeholder="Iuran bulanan, transport, dll">
-                </div>
-                <div class="form-group">
-                    <label>📅 Bulan Transaksi</label>
-                    <input type="month" id="bulanTransaksi">
-                </div>
-                <div class="form-group">
-                    <button id="btnKasMasuk" class="btn-success">➕ Kas Masuk</button>
-                    <button id="btnKasKeluar" class="btn-danger">➖ Kas Keluar</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Daftar Fasilitator & Saldo -->
-        <div class="table-wrapper">
-            <div class="section-header">
-                <h3>📋 Daftar Fasilitator & Saldo</h3>
-                <div class="search-box">
-                    <input type="text" id="searchFasilitator" placeholder="🔍 Cari fasilitator..." class="search-input">
-                </div>
-            </div>
-            <div class="table-container">
-                <table id="fasilitatorTable">
-                    <thead>
-                        <tr><th>No</th><th>Nama Fasilitator</th><th>Saldo Kas (Rp)</th><th>Aksi</th></tr>
-                    </thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Laporan Bulanan (Multi Select) -->
-        <div class="laporan-panel">
-            <h3>📊 Laporan Rekapan Multi Bulan</h3>
-            <div class="laporan-controls">
-                <div class="multi-select-group">
-                    <label>📅 Pilih Bulan (Ctrl+Click untuk multi select)</label>
-                    <select id="bulanMultiSelect" multiple size="5" class="multi-select"></select>
-                    <div class="multi-select-buttons">
-                        <button id="selectAllBulan" class="btn-mini">✅ Pilih Semua</button>
-                        <button id="clearBulan" class="btn-mini">❌ Hapus Pilihan</button>
-                    </div>
-                </div>
-                <div class="laporan-actions">
-                    <button id="viewReportBtn" class="btn-primary">👁️ Tampilkan Rekapan</button>
-                    <button id="printReportBtn" class="btn-secondary">🖨️ Cetak / PDF</button>
-                    <button id="exportReportBtn" class="btn-secondary">📎 Export CSV</button>
-                </div>
-            </div>
-            <div id="reportResult" class="report-result"></div>
-            <div class="chart-container">
-                <canvas id="reportChart" width="400" height="200"></canvas>
-            </div>
-        </div>
-
-        <!-- Grafik Trend Bulanan -->
-        <div class="trend-panel">
-            <h3>📈 Trend Kas Bulanan</h3>
-            <div class="trend-controls">
-                <select id="trendYear" class="year-select"></select>
-                <button id="refreshTrendBtn" class="btn-primary">Refresh Grafik</button>
-                <button id="exportTrendBtn" class="btn-secondary">📎 Export Trend CSV</button>
-            </div>
-            <canvas id="trendChart" width="800" height="300"></canvas>
-        </div>
-
-        <!-- Grafik Top Fasilitator -->
-        <div class="top-panel">
-            <h3>🏆 Top 10 Fasilitator (Berdasarkan Iuran)</h3>
-            <canvas id="topChart" width="800" height="300"></canvas>
-        </div>
-
-        <!-- Riwayat Transaksi -->
-        <div class="riwayat-panel">
-            <h3>📜 Riwayat Transaksi Terbaru</h3>
-            <div class="riwayat-list" id="riwayatList"></div>
-            <div class="riwayat-actions">
-                <button id="clearHistoryBtn" class="btn-danger-mini">🗑 Bersihkan Semua Riwayat</button>
-                <button id="exportHistoryBtn" class="btn-secondary-mini">📎 Export Riwayat CSV</button>
-            </div>
-        </div>
-
-        <!-- Tombol Reset Data -->
-        <div class="reset-panel">
-            <button id="resetDataBtn" class="btn-danger">⚠️ Reset Semua Data (Saldo 0 & Hapus Riwayat)</button>
-        </div>
-
-        <footer>
-            <p>📌 Data tersimpan di localStorage browser Anda | Export CSV untuk backup | Multi bulan = pilih beberapa bulan sekaligus (Ctrl+Click)</p>
-        </footer>
+        <div class="badge">🗺️ 3 Kecamatan • Batch Input • Spreadsheet Ready</div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="facilitator">📇 Daftar & Wilayah</button>
+        <button class="tab-btn" data-tab="payment">💰 Catat Iuran per Bulan</button>
+        <button class="tab-btn" data-tab="batch">📂 Batch & Spreadsheet</button>
+    </div>
+
+    <!-- TAB 1: Daftar Fasilitator -->
+    <div id="facilitatorTab" class="tab-content">
+        <div class="card">
+            <div class="card-title">👥 Data Fasilitator (Koordinator & Anggota per Wilayah)</div>
+            <div class="grid-actions">
+                <button id="exportFasilitatorBtn" class="secondary">📎 Export CSV (Nama,Wilayah)</button>
+                <label for="importFasilitatorFile" class="secondary" style="background:#e2e8f0; padding:8px 14px; border-radius:40px; cursor:pointer;">📂 Import CSV (update daftar)</label>
+                <input type="file" id="importFasilitatorFile" accept=".csv" style="display:none;">
+                <button id="resetDefaultDataBtn" class="secondary">🔄 Reset ke Data Default Magelang</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchFacilitator" placeholder="Cari nama atau wilayah..." style="border-radius:40px;">
+            </div>
+            <div class="scrollable-table">
+                <table id="fasilitatorTable">
+                    <thead>
+                        <tr><th>No</th><th>Nama Lengkap</th><th>Wilayah</th><th style="width:80px">Aksi</th></tr>
+                    </thead>
+                    <tbody id="fasilitatorTbody"></tbody>
+                </table>
+            </div>
+            <div class="info-text">
+                💡 <strong>Tips:</strong> Edit langsung di tabel untuk mengubah nama atau wilayah. Perubahan otomatis tersimpan di browser Anda.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Pencatatan Iuran -->
+    <div id="paymentTab" class="tab-content" style="display:none;">
+        <div class="card">
+            <div class="card-title">💰 Iuran Bulanan (Rp10.000/orang)</div>
+            <div class="flex-row">
+                <div class="form-group">
+                    <label>Pilih Bulan (Tahun-Bulan)</label>
+                    <input type="month" id="monthPicker" value="2026-01">
+                </div>
+                <button id="loadPaymentBtn">📋 Muat Data Bulan Ini</button>
+                <button id="batchPaymentByMonthBtn" class="secondary">📤 Batch Bayar (Upload CSV Nama,Status)</button>
+                <input type="file" id="batchPaymentFile" accept=".csv" style="display:none;">
+                <button id="exportPaymentMonthBtn" class="secondary">📎 Export CSV Bulan Ini</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchPayment" placeholder="Cari nama fasilitator..." style="border-radius:40px;">
+            </div>
+            <div class="scrollable-table">
+                <table id="paymentTable">
+                    <thead><tr><th>No</th><th>Nama</th><th>Wilayah</th><th>Status Bayar</th><th>Nominal (Rp)</th><th>Aksi</th></tr></thead>
+                    <tbody id="paymentTbody"></tbody>
+                </table>
+            </div>
+            <div class="info-text">
+                ✅ Centang checkbox = LUNAS (Rp10.000). Perubahan otomatis tersimpan per bulan.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Batch & Spreadsheet -->
+    <div id="batchTab" class="tab-content" style="display:none;">
+        <div class="card">
+            <div class="card-title">📁 Integrasi Spreadsheet (CSV)</div>
+            <p>Gunakan CSV untuk update massal atau backup. Edit di Excel / Google Sheets lalu impor kembali.</p>
+            <div class="grid-actions">
+                <button id="exportAllPaymentsBtn">📎 Ekspor SEMUA Pembayaran (Semua Bulan)</button>
+                <button id="exportAllFacilitatorsBtn" class="secondary">📇 Ekspor Data Fasilitator</button>
+                <label for="importAllPaymentsFile" class="secondary" style="background:#e2e8f0; padding:8px 14px; border-radius:40px; cursor:pointer;">📂 Impor Pembayaran (CSV)</label>
+                <input type="file" id="importAllPaymentsFile" accept=".csv" style="display:none;">
+            </div>
+            <div class="info-text">
+                📌 <strong>Format Impor Pembayaran:</strong> bulan (YYYY-MM), nama_fasilitator, status (LUNAS/BELUM), nominal (opsional)<br>
+                📌 <strong>Format Fasilitator CSV:</strong> nama,wilayah (bisa pakai header atau tanpa header)<br>
+                🔁 Semua data tersimpan di browser (localStorage) dan bisa diekspor/diimpor kapan saja.
+            </div>
+        </div>
+    </div>
+    <footer>
+        Aplikasi Kas Fasilitator Magelang | Data tersimpan di perangkat Anda
+    </footer>
+</div>
+
+<script>
+    // ======================= DATA DEFAULT LENGKAP =======================
+    const DEFAULT_FACILITATORS_DATA = [
+        // Koordinator Kota
+        { name: "Muhammad Rajasa Danny Alamsyah, S.H.", wilayah: "Koordinator Kota" },
+        // Kecamatan Magelang Utara
+        { name: "Ardy Hudhatama, S.Pd.", wilayah: "Koordinator Magelang Utara" },
+        { name: "Ardian Dwi Chandra, S.M.", wilayah: "Kramat Utara (Koordinator)" },
+        { name: "Kharisma Putri Pertiwi, A.Md.T", wilayah: "Kramat Utara" },
+        { name: "Nurul Afifa Dian Segari, S.P", wilayah: "Kramat Selatan (Koordinator)" },
+        { name: "Febrian Agus Partomo, S.Sos.", wilayah: "Kramat Selatan" },
+        { name: "Haning Karunia Putra, A.Md.Ak.", wilayah: "Kramat Selatan" },
+        { name: "Aulia Trisna Agustin, S.H.", wilayah: "Kramat Selatan" },
+        { name: "Didik Subiyantoro, S.E.", wilayah: "Kedungsari (Koordinator)" },
+        { name: "Febriana Dewi Utami, S.H.", wilayah: "Kedungsari" },
+        { name: "Ida Kumia Kalpikaratri, S.Pd.", wilayah: "Kedungsari" },
+        { name: "Dhevi Arishandy, S.P.", wilayah: "Kedungsari" },
+        { name: "Wreksaningrum Agung Prasetyawati Supiyo, S.Psi.", wilayah: "Wates (Koordinator)" },
+        { name: "Agung Dian Saputra, S.E.", wilayah: "Wates" },
+        { name: "Ghina Fauzia Rafidah, S.Pd.", wilayah: "Wates" },
+        { name: "Muchammad Fawaid Mubarok, S.Sos.", wilayah: "Wates" },
+        { name: "Andi Hendra Saputra Gaffar, A.Md.Kom", wilayah: "Wates" },
+        { name: "Dian Septi Virgiani, S.E", wilayah: "Potrobangsan (Koordinator)" },
+        { name: "Henry Arif Wahyudi, S. Kom", wilayah: "Potrobangsan" },
+        { name: "Muna Maajida Haryan Azhar, S.Ak", wilayah: "Potrobangsan" },
+        { name: "Daniel Anggraito, S.Kom.", wilayah: "Potrobangsan" },
+        // Kecamatan Magelang Tengah
+        { name: "Enggar Saraswati, A.Md.Kep", wilayah: "Koordinator Magelang Tengah" },
+        { name: "Novella Putri Prahardika, S.Si.", wilayah: "Magelang (Koordinator)" },
+        { name: "Priyo Widiatmoko, S.E.", wilayah: "Magelang" },
+        { name: "Rafidha Aliy Rachmani, S.M.", wilayah: "Magelang" },
+        { name: "Dewi Utari Wahyuningtyas, S.S.T", wilayah: "Gelangan (Koordinator)" },
+        { name: "Ivan Adi Prabowo, S.P.", wilayah: "Gelangan" },
+        { name: "Nindhitya Mega Putri Syaharani, S.H", wilayah: "Gelangan" },
+        { name: "Anisa Tri Ambarwati, S.Pd.", wilayah: "Gelangan" },
+        { name: "Priska Wijayanti, S.S.", wilayah: "Panjang (Koordinator)" },
+        { name: "Dewi Rosita, S.M.", wilayah: "Panjang" },
+        { name: "Dwi Sekar Novianingrum, S.Sos.", wilayah: "Panjang" },
+        { name: "Vicenco Putra Astono, S.Pd.", wilayah: "Panjang" },
+        { name: "Briliant Oliviera, S.Pd.", wilayah: "Rejowinangun Utara (Koordinator)" },
+        { name: "Denny Susila Andriyana, S.Pd.", wilayah: "Rejowinangun Utara" },
+        { name: "Refita Aqdwirida, S.Pd.", wilayah: "Rejowinangun Utara" },
+        { name: "Dhika Santi Apriliati, A.Md. Kep.", wilayah: "Rejowinangun Utara" },
+        { name: "Nur Alfian Farandhika, S.Pd.", wilayah: "Rejowinangun Utara" },
+        { name: "Usamah Abdul Hanif, S.E.", wilayah: "Rejowinangun Utara" },
+        { name: "Nova Puspitasari, S.Psi.", wilayah: "Kemirirejo (Koordinator)" },
+        { name: "Herawan Gagah Widigdo, S.E.", wilayah: "Kemirirejo" },
+        { name: "Wiwit Nakhiyah, A.Md.Kep.", wilayah: "Kemirirejo" },
+        { name: "Deby Liany Sasongko, S.I.Kom.", wilayah: "Kemirirejo" },
+        { name: "Edo Aditya Putra, S.E.", wilayah: "Cacaban (Koordinator)" },
+        { name: "Dinda Ayu Rosa Loren, S.H.", wilayah: "Cacaban" },
+        { name: "Nita Agustin, A.Md.Stat.", wilayah: "Cacaban" },
+        { name: "Rhesa Albinhassan Philorona, S.E", wilayah: "Cacaban" },
+        { name: "Shafa Alika Tolti Mayvia, S.I.Kom.", wilayah: "Cacaban" },
+        // Kecamatan Magelang Selatan
+        { name: "Chandra Tribawono, S.Pd.", wilayah: "Koordinator Magelang Selatan" },
+        { name: "Siska Tiara Dewi, S.E", wilayah: "Magersari (Koordinator)" },
+        { name: "Laili Yustighfar F., S.E.", wilayah: "Magersari" },
+        { name: "Hayu Ambar Pratiwi, S.Sos.", wilayah: "Magersari" },
+        { name: "Nurul Hikmah, S.Kom.", wilayah: "Magersari" },
+        { name: "Syahriza Aldi Rois, S.E.", wilayah: "Magersari" },
+        { name: "Avissa Tsurayya, S.H.", wilayah: "Rejowinangun Selatan (Koordinator)" },
+        { name: "Aditya Budi Setiawan, S. T.", wilayah: "Rejowinangun Selatan" },
+        { name: "Aura Mellenia Imani, A.Md.Ak.", wilayah: "Rejowinangun Selatan" },
+        { name: "Elifa Fenny Rahayu, S.M.", wilayah: "Rejowinangun Selatan" },
+        { name: "Eky Katharinella Kumiarum, S.E.", wilayah: "Tidar Utara (Koordinator)" },
+        { name: "Alivia Nurul Hikma, S.Sos", wilayah: "Tidar Utara" },
+        { name: "Eka Dyah Astuti, S.Sos.", wilayah: "Tidar Utara" },
+        { name: "Rizky Agung Pambudi, S.S.", wilayah: "Tidar Selatan (Koordinator)" },
+        { name: "Rina Mawarinda, S.Pd", wilayah: "Tidar Selatan" },
+        { name: "Yeni Nurul Utami, ST.", wilayah: "Tidar Selatan" },
+        { name: "Zaenal Arifin, S.T.", wilayah: "Jurangombo Utara (Koordinator)" },
+        { name: "Wahyu Galih Saputra, S.H.", wilayah: "Jurangombo Utara" },
+        { name: "Lia Shabilla, S.Sos.", wilayah: "Jurangombo Utara" },
+        { name: "Vega Sofle Kharisrma Putri, S.M.", wilayah: "Jurangombo Selatan (Koordinator)" },
+        { name: "Clarisa Sasti Bintoro, S.E.", wilayah: "Jurangombo Selatan" },
+        { name: "Kalpataru Muda Fathlka, S.E.", wilayah: "Jurangombo Selatan" }
+    ];
+
+    let facilitators = [];
+    let payments = {};
+
+    const DEFAULT_AMOUNT = 10000;
+    const STORAGE_KEYS = {
+        FACILITATORS: 'kas_facilitators_magelang',
+        PAYMENTS: 'kas_payments_magelang'
+    };
+
+    function saveFacilitators() { 
+        localStorage.setItem(STORAGE_KEYS.FACILITATORS, JSON.stringify(facilitators)); 
+        updateTotalCount(); 
+    }
+    function savePayments() { localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments)); }
+    function updateTotalCount() { 
+        const countEl = document.getElementById('totalFasilitatorCount');
+        if(countEl) countEl.innerText = facilitators.length;
+    }
+
+    function initDefaultFacilitators() {
+        facilitators = DEFAULT_FACILITATORS_DATA.map((item, idx) => ({
+            id: idx + 1,
+            name: item.name,
+            wilayah: item.wilayah
+        }));
+        saveFacilitators();
+    }
+
+    function loadData() {
+        const storedFac = localStorage.getItem(STORAGE_KEYS.FACILITATORS);
+        if (storedFac) {
+            facilitators = JSON.parse(storedFac);
+            if (!facilitators.length) initDefaultFacilitators();
+        } else {
+            initDefaultFacilitators();
+        }
+        const storedPay = localStorage.getItem(STORAGE_KEYS.PAYMENTS);
+        if (storedPay) payments = JSON.parse(storedPay);
+        else payments = {};
+        savePayments();
+        updateTotalCount();
+    }
+
+    function getOrCreateMonthPayments(monthKey) {
+        if (!payments[monthKey]) {
+            payments[monthKey] = facilitators.map(f => ({ facilitatorId: f.id, status: false, amount: 0 }));
+            savePayments();
+        }
+        return payments[monthKey];
+    }
+
+    function updatePaymentStatus(monthKey, facilitatorId, statusBool) {
+        let monthData = payments[monthKey];
+        if (!monthData) {
+            monthData = facilitators.map(f => ({ facilitatorId: f.id, status: false, amount: 0 }));
+            payments[monthKey] = monthData;
+        }
+        const record = monthData.find(p => p.facilitatorId === facilitatorId);
+        if (record) {
+            record.status = statusBool;
+            record.amount = statusBool ? DEFAULT_AMOUNT : 0;
+        } else {
+            monthData.push({ facilitatorId, status: statusBool, amount: statusBool ? DEFAULT_AMOUNT : 0 });
+        }
+        savePayments();
+    }
+
+    function renderFacilitatorTable() {
+        const tbody = document.getElementById('fasilitatorTbody');
+        if(!tbody) return;
+        const searchTerm = document.getElementById('searchFacilitator')?.value.toLowerCase() || '';
+        const filtered = facilitators.filter(f => f.name.toLowerCase().includes(searchTerm) || f.wilayah.toLowerCase().includes(searchTerm));
+        tbody.innerHTML = '';
+        filtered.forEach((f, idx) => {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = facilitators.findIndex(orig => orig.id === f.id) + 1;
+            const nameCell = row.insertCell(1);
+            const nameInput = document.createElement('input');
+            nameInput.value = f.name; nameInput.style.width = '100%'; nameInput.style.borderRadius = '20px'; nameInput.style.padding = '6px 10px';
+            nameInput.addEventListener('change', (e) => { f.name = e.target.value; saveFacilitators(); if(document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(document.getElementById('monthPicker').value); });
+            nameCell.appendChild(nameInput);
+            const wilCell = row.insertCell(2);
+            const wilInput = document.createElement('input');
+            wilInput.value = f.wilayah; wilInput.style.width = '100%'; wilInput.style.borderRadius = '20px'; wilInput.style.padding = '6px 10px';
+            wilInput.addEventListener('change', (e) => { f.wilayah = e.target.value; saveFacilitators(); if(document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(document.getElementById('monthPicker').value); });
+            wilCell.appendChild(wilInput);
+            const actionCell = row.insertCell(3);
+            const delBtn = document.createElement('button');
+            delBtn.innerText = 'Hapus'; delBtn.className = 'small secondary'; delBtn.style.background = '#fee2e2'; delBtn.style.color = '#b91c1c';
+            delBtn.onclick = () => { 
+                if(confirm(`Hapus ${f.name}?`)) { 
+                    facilitators = facilitators.filter(fx => fx.id !== f.id); 
+                    for(let m in payments) payments[m] = payments[m].filter(p => p.facilitatorId !== f.id); 
+                    saveFacilitators(); savePayments(); renderFacilitatorTable(); 
+                    if(document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(document.getElementById('monthPicker').value); 
+                } 
+            };
+            actionCell.appendChild(delBtn);
+        });
+        const addRow = tbody.insertRow();
+        const addCell = addRow.insertCell(0); addCell.colSpan = 4; addCell.style.textAlign = 'center';
+        const addButton = document.createElement('button'); addButton.innerText = '+ Tambah Fasilitator'; addButton.className = 'small';
+        addButton.onclick = () => { const newId = Date.now(); facilitators.push({ id: newId, name: 'Nama Baru', wilayah: 'Wilayah Baru' }); saveFacilitators(); renderFacilitatorTable(); const month = document.getElementById('monthPicker')?.value; if(month && document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(month); };
+        addCell.appendChild(addButton);
+    }
+
+    function renderPaymentTable(monthKey) {
+        const tbody = document.getElementById('paymentTbody');
+        if (!tbody || !facilitators.length) return;
+        const searchTerm = document.getElementById('searchPayment')?.value.toLowerCase() || '';
+        const filteredFac = facilitators.filter(f => f.name.toLowerCase().includes(searchTerm));
+        let monthData = payments[monthKey];
+        if (!monthData) monthData = facilitators.map(f => ({ facilitatorId: f.id, status: false, amount: 0 }));
+        const statusMap = new Map(monthData.map(p => [p.facilitatorId, p.status]));
+        tbody.innerHTML = '';
+        filteredFac.forEach((f, idx) => {
+            const isPaid = statusMap.get(f.id) || false;
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = facilitators.findIndex(orig => orig.id === f.id) + 1;
+            row.insertCell(1).innerText = f.name;
+            row.insertCell(2).innerText = f.wilayah || '-';
+            const statusCell = row.insertCell(3);
+            const chk = document.createElement('input'); chk.type = 'checkbox'; chk.checked = isPaid; chk.className = 'checkbox-style';
+            chk.addEventListener('change', (e) => { updatePaymentStatus(monthKey, f.id, e.target.checked); renderPaymentTable(monthKey); });
+            const labelSpan = document.createElement('span'); labelSpan.innerText = isPaid ? ' LUNAS' : ' BELUM'; labelSpan.style.marginLeft = '8px'; labelSpan.className = `status-badge ${isPaid ? 'lunas' : 'belum'}`;
+            statusCell.appendChild(chk); statusCell.appendChild(labelSpan);
+            row.insertCell(4).innerText = isPaid ? `Rp${DEFAULT_AMOUNT.toLocaleString()}` : 'Rp0';
+            const actionCell = row.insertCell(5);
+            const toggleBtn = document.createElement('button'); toggleBtn.innerText = isPaid ? 'Batalkan' : 'Bayar'; toggleBtn.className = 'small';
+            toggleBtn.style.background = isPaid ? '#f97316' : '#1e6f5c';
+            toggleBtn.onclick = () => { updatePaymentStatus(monthKey, f.id, !isPaid); renderPaymentTable(monthKey); };
+            actionCell.appendChild(toggleBtn);
+        });
+    }
+
+    function importFacilitatorsFromCSV(csvText) {
+        const lines = csvText.split(/\r?\n/).filter(l => l.trim());
+        let start = (lines[0]?.toLowerCase().includes('nama') && lines[0]?.toLowerCase().includes('wilayah')) ? 1 : 0;
+        const newList = []; let maxId = facilitators.length ? Math.max(...facilitators.map(f=>f.id),0) : 0;
+        for(let i=start; i<lines.length; i++) {
+            let parts = lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,''));
+            let name = parts[0]; let wilayah = parts[1] || '';
+            if(!name) continue;
+            maxId++; newList.push({ id: maxId, name: name, wilayah: wilayah });
+        }
+        if(newList.length) { 
+            facilitators = newList; saveFacilitators(); 
+            for(let m in payments) { 
+                payments[m] = payments[m].filter(p => facilitators.some(f=>f.id===p.facilitatorId)); 
+                facilitators.forEach(f => { if(!payments[m].some(p=>p.facilitatorId===f.id)) payments[m].push({ facilitatorId: f.id, status: false, amount:0 }); }); 
+            } 
+            savePayments(); renderFacilitatorTable(); 
+            const month = document.getElementById('monthPicker').value; 
+            if(document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(month); 
+            alert(`Berhasil import ${newList.length} fasilitator`);
+        } else alert("CSV tidak valid");
+    }
+
+    function exportFacilitatorsCSV() { 
+        let content = "nama,wilayah\n"; 
+        facilitators.forEach(f => { content += `"${f.name.replace(/"/g, '""')}","${f.wilayah.replace(/"/g, '""')}"\n`; }); 
+        downloadCSV(content, "fasilitator_magelang.csv"); 
+    }
+    
+    function exportPaymentsMonthCSV(monthKey) { 
+        let rows = [["nama", "wilayah", "status", "nominal"]]; 
+        let monthData = payments[monthKey] || []; 
+        facilitators.forEach(f => { 
+            let rec = monthData.find(p=>p.facilitatorId===f.id); 
+            let status = rec?.status ? "LUNAS" : "BELUM"; 
+            let nominal = rec?.status ? DEFAULT_AMOUNT : 0; 
+            rows.push([`"${f.name}"`, `"${f.wilayah}"`, status, nominal]); 
+        }); 
+        downloadCSV(rows.map(r=>r.join(",")).join("\n"), `iuran_${monthKey}.csv`); 
+    }
+    
+    function exportAllPayments() { 
+        let rows = [["bulan","nama_fasilitator","wilayah","status","nominal"]]; 
+        for(let month in payments) { 
+            payments[month].forEach(p => { 
+                let fas = facilitators.find(f=>f.id===p.facilitatorId); 
+                if(fas) rows.push([month, `"${fas.name}"`, `"${fas.wilayah}"`, p.status?"LUNAS":"BELUM", p.status?DEFAULT_AMOUNT:0]); 
+            }); 
+        } 
+        downloadCSV(rows.map(r=>r.join(",")).join("\n"), "semua_iuran.csv"); 
+    }
+    
+    function importPaymentsFromCSV(csvText) { 
+        const lines = csvText.split(/\r?\n/).filter(l=>l.trim()); 
+        if(lines.length<2) return; 
+        let header=lines[0].toLowerCase(); 
+        let bulanIdx=header.split(',').findIndex(c=>c.includes('bulan')); 
+        let namaIdx=header.split(',').findIndex(c=>c.includes('nama')); 
+        if(bulanIdx===-1 || namaIdx===-1){ alert("Butuh kolom bulan & nama"); return; } 
+        let updated=0; 
+        for(let i=1;i<lines.length;i++){ 
+            let parts=lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,'')); 
+            let bulan=parts[bulanIdx]; 
+            let nama=parts[namaIdx]; 
+            let statusRaw=(parts.length>namaIdx+1?parts[namaIdx+1]:'').toUpperCase(); 
+            let isLunas=statusRaw.includes('LUNAS')||statusRaw==='1'; 
+            let fas=facilitators.find(f=>f.name.toLowerCase()===nama.toLowerCase()); 
+            if(fas&&bulan){ 
+                if(!payments[bulan]) payments[bulan]=facilitators.map(f=>({facilitatorId:f.id,status:false,amount:0})); 
+                let rec=payments[bulan].find(p=>p.facilitatorId===fas.id); 
+                if(rec){ rec.status=isLunas; rec.amount=isLunas?DEFAULT_AMOUNT:0; updated++; } 
+            } 
+        } 
+        savePayments(); 
+        alert(`Impor selesai, ${updated} data diperbarui`); 
+        const month=document.getElementById('monthPicker').value; 
+        if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(month); 
+    }
+    
+    function batchPaymentsForMonth(monthKey, csvText){ 
+        const lines=csvText.split(/\r?\n/).filter(l=>l.trim()); 
+        let start=lines[0]?.toLowerCase().includes('nama')?1:0; 
+        let up=0; 
+        for(let i=start;i<lines.length;i++){ 
+            let parts=lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,'')); 
+            let nama=parts[0]; 
+            let statusText=parts[1]?.toUpperCase()||''; 
+            let fas=facilitators.find(f=>f.name.toLowerCase()===nama.toLowerCase()); 
+            if(fas){ 
+                let isLunas=statusText.includes('LUNAS')||statusText==='1'; 
+                updatePaymentStatus(monthKey, fas.id, isLunas); 
+                up++; 
+            } 
+        } 
+        if(up) renderPaymentTable(monthKey); 
+        alert(`Batch update ${up} catatan untuk ${monthKey}`); 
+    }
+    
+    function downloadCSV(content, filename) { 
+        const blob=new Blob(["\uFEFF"+content],{type:"text/csv;charset=utf-8"}); 
+        const link=document.createElement("a"); 
+        link.href=URL.createObjectURL(blob); 
+        link.download=filename; 
+        link.click(); 
+        URL.revokeObjectURL(link.href); 
+    }
+    
+    function resetToDefault() { 
+        if(confirm("Reset ke data default Magelang? Semua perubahan akan hilang.")) { 
+            initDefaultFacilitators(); 
+            payments = {}; 
+            savePayments(); 
+            renderFacilitatorTable(); 
+            const month=document.getElementById('monthPicker').value; 
+            if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(month); 
+        } 
+    }
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData(); 
+        renderFacilitatorTable();
+        
+        const tabs=document.querySelectorAll('.tab-btn'); 
+        const contents={facilitator:document.getElementById('facilitatorTab'), payment:document.getElementById('paymentTab'), batch:document.getElementById('batchTab')};
+        
+        function switchTab(tabId){ 
+            Object.values(contents).forEach(c=>c.style.display='none'); 
+            contents[tabId].style.display='block'; 
+            tabs.forEach(btn=>btn.classList.remove('active')); 
+            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active'); 
+            if(tabId==='payment') renderPaymentTable(document.getElementById('monthPicker').value); 
+            if(tabId==='facilitator') renderFacilitatorTable(); 
+        }
+        
+        tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
+        
+        document.getElementById('loadPaymentBtn').addEventListener('click',()=>renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('monthPicker').addEventListener('change',()=>renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('exportFasilitatorBtn').addEventListener('click',exportFacilitatorsCSV);
+        
+        document.getElementById('importFasilitatorFile').addEventListener('change',e=>{ 
+            if(e.target.files[0]){ 
+                let reader=new FileReader(); 
+                reader.onload=ev=>{ importFacilitatorsFromCSV(ev.target.result); e.target.value=''; }; 
+                reader.readAsText(e.target.files[0],'UTF-8'); 
+            } 
+        });
+        
+        document.getElementById('resetDefaultDataBtn').addEventListener('click',resetToDefault);
+        document.getElementById('exportPaymentMonthBtn').addEventListener('click',()=>exportPaymentsMonthCSV(document.getElementById('monthPicker').value));
+        document.getElementById('batchPaymentByMonthBtn').addEventListener('click',()=>document.getElementById('batchPaymentFile').click());
+        
+        document.getElementById('batchPaymentFile').addEventListener('change',e=>{ 
+            if(e.target.files[0]){ 
+                let month=document.getElementById('monthPicker').value; 
+                let reader=new FileReader(); 
+                reader.onload=ev=>{ batchPaymentsForMonth(month, ev.target.result); e.target.value=''; }; 
+                reader.readAsText(e.target.files[0],'UTF-8'); 
+            } 
+        });
+        
+        document.getElementById('exportAllPaymentsBtn').addEventListener('click',exportAllPayments);
+        document.getElementById('exportAllFacilitatorsBtn').addEventListener('click',exportFacilitatorsCSV);
+        
+        document.getElementById('importAllPaymentsFile').addEventListener('change',e=>{ 
+            if(e.target.files[0]){ 
+                let reader=new FileReader(); 
+                reader.onload=ev=>{ importPaymentsFromCSV(ev.target.result); e.target.value=''; }; 
+                reader.readAsText(e.target.files[0],'UTF-8'); 
+            } 
+        });
+        
+        document.getElementById('searchFacilitator').addEventListener('input',()=>renderFacilitatorTable());
+        document.getElementById('searchPayment').addEventListener('input',()=>renderPaymentTable(document.getElementById('monthPicker').value));
+        
+        renderPaymentTable('2026-01');
+        switchTab('facilitator');
+    });
+</script>
 </body>
 </html>

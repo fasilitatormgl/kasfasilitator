@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kas Fasilitator Magelang | Iuran Rp10.000 | Rekap Tahunan Matrix</title>
+    <title>Kas Fasilitator Magelang | Iuran Rp10.000 | Login Bendahara</title>
     <style>
         * {
             box-sizing: border-box;
@@ -15,6 +15,64 @@
             padding: 20px;
             color: #1e293b;
         }
+        /* Login Screen Style */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .login-card {
+            background: white;
+            border-radius: 32px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .login-card h2 {
+            margin-top: 0;
+            color: #0f3b2c;
+        }
+        .login-card input {
+            width: 100%;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 60px;
+            font-size: 1rem;
+        }
+        .login-card button {
+            background: #1e6f5c;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 60px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .login-card button:hover {
+            opacity: 0.9;
+        }
+        .error-msg {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+        .app-container {
+            display: none;
+        }
+        /* Style asli aplikasi */
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -222,7 +280,6 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        /* Matrix styles */
         .matrix-container {
             overflow-x: auto;
             border-radius: 20px;
@@ -321,6 +378,12 @@
             color: #6c757d;
             font-size: 0.8rem;
         }
+        .logout-btn {
+            background: #dc2626;
+            margin-left: 12px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+        }
         @media (max-width: 720px) {
             body { padding: 12px; }
             .matrix-table { font-size: 0.7rem; }
@@ -330,13 +393,30 @@
     </style>
 </head>
 <body>
+
+<!-- LAYAR LOGIN -->
+<div id="loginScreen" class="login-overlay">
+    <div class="login-card">
+        <h2>🔐 Akses Bendahara</h2>
+        <p>Masukkan password untuk mengelola Kas Fasilitator Magelang</p>
+        <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
+        <button id="loginBtn">Login</button>
+        <div id="loginError" class="error-msg"></div>
+    </div>
+</div>
+
+<!-- KONTEN UTAMA APLIKASI (hanya muncul setelah login sukses) -->
+<div id="appContent" class="app-container">
 <div class="container">
     <div class="header">
         <div>
             <h1>📋 Kas Fasilitator Magelang</h1>
             <div class="sub">Iuran per orang per bulan: <strong>Rp10.000</strong> • Total Fasilitator: <span id="totalFasilitatorCount">0</span> orang</div>
         </div>
-        <div class="badge">🗺️ Batch Input • Matrix Tahunan • Rekap Lengkap</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="badge">🗺️ Batch Input • Matrix Tahunan • Rekap Lengkap</div>
+            <button id="logoutButton" class="logout-btn">🚪 Logout</button>
+        </div>
     </div>
 
     <div class="tabs">
@@ -346,7 +426,7 @@
         <button class="tab-btn" data-tab="batch">📂 Batch & Spreadsheet</button>
     </div>
 
-    <!-- TAB 1: Pencatatan Iuran dengan Select All & Kas Keluar -->
+    <!-- TAB 1: Pencatatan Iuran -->
     <div id="paymentTab" class="tab-content">
         <div class="card">
             <div class="card-title">💰 Iuran Bulanan (Rp10.000/orang)</div>
@@ -380,7 +460,7 @@
         </div>
     </div>
 
-    <!-- TAB 2: REKAP per BULAN (sudah bayar / belum) -->
+    <!-- TAB 2: REKAP per BULAN -->
     <div id="rekapTab" class="tab-content" style="display:none;">
         <div class="card">
             <div class="card-title">📊 Rekap Iuran per Bulan</div>
@@ -394,7 +474,7 @@
         </div>
     </div>
 
-    <!-- TAB 3: MATRIX TAHUNAN (SUDAH/BELUM per bulan, Biru/Merah) -->
+    <!-- TAB 3: MATRIX TAHUNAN -->
     <div id="matrixTab" class="tab-content" style="display:none;">
         <div class="card">
             <div class="card-title">📅 Matrix Tahunan Iuran Fasilitator</div>
@@ -406,16 +486,13 @@
                 <button id="exportMatrixBtn" class="secondary">📎 Export Matrix ke CSV</button>
                 <button id="refreshMatrixBtn" class="secondary">🔄 Refresh</button>
             </div>
-            <!-- Total anggaran tahun ini & semua -->
             <div id="matrixTotalsPanel" class="summary-stats"></div>
-            <!-- Matrix utama: Nama | JAN | FEB | MAR ... DES -->
             <div class="matrix-container">
                 <table class="matrix-table" id="annualMatrixTable">
                     <thead id="matrixHeader"></thead>
                     <tbody id="matrixBody"></tbody>
                 </table>
             </div>
-            <!-- Tabel Ringkasan per Bulan: Iuran Masuk, Kas Keluar, Keterangan, Net -->
             <div class="card-title" style="margin-top: 1rem;">📋 Rincian Kas per Bulan (Iuran Masuk & Kas Keluar)</div>
             <div class="scrollable-table">
                 <table class="monthly-summary-table" id="monthlyKasTable" style="width:100%">
@@ -423,7 +500,7 @@
                     <tbody id="monthlyKasTbody"></tbody>
                 </table>
             </div>
-            <div class="info-text">🔵 Biru = SUDAH BAYAR &nbsp;&nbsp; 🔴 Merah = BELUM BAYAR. Data kas keluar diambil dari riwayat transaksi. Total anggaran dihitung otomatis.</div>
+            <div class="info-text">🔵 Biru = SUDAH BAYAR &nbsp;&nbsp; 🔴 Merah = BELUM BAYAR. Data kas keluar diambil dari riwayat transaksi.</div>
         </div>
     </div>
 
@@ -444,7 +521,8 @@
             <div class="info-text">📌 Format Impor Pembayaran: bulan (YYYY-MM), nama_fasilitator, status (LUNAS/BELUM)<br>📌 Semua data tersimpan di localStorage.</div>
         </div>
     </div>
-    <footer>Aplikasi Kas Fasilitator Magelang | Data tersimpan di perangkat Anda | Matrix menampilkan SUDAH (biru) / BELUM (merah) sepanjang tahun</footer>
+    <footer>Aplikasi Kas Fasilitator Magelang | Data tersimpan di perangkat Anda | Login sebagai bendahara</footer>
+</div>
 </div>
 
 <script>
@@ -470,8 +548,8 @@
         "Clarisa Sasti Bintoro, S.E.", "Kalpataru Muda Fathlka, S.E."
     ];
 
-    let facilitators = [];      // { id, name }
-    let payments = {};          // "YYYY-MM" -> [{ facilitatorId, status, amount }]
+    let facilitators = [];
+    let payments = {};
     let pendingChanges = null;
     let currentMonthKey = "";
     const DEFAULT_AMOUNT = 10000;
@@ -504,7 +582,6 @@
     function discardPendingChanges(){ pendingChanges=null; document.getElementById('confirmBar').style.display='none'; renderPaymentTable(currentMonthKey); }
     function addPendingUpdate(facilitatorId,newStatus){ if(!pendingChanges) pendingChanges={monthKey:currentMonthKey,updates:[]}; let ex=pendingChanges.updates.find(u=>u.facilitatorId===facilitatorId); if(ex) ex.newStatus=newStatus; else pendingChanges.updates.push({facilitatorId,newStatus}); document.getElementById('confirmBar').style.display='flex'; }
 
-    // render payment tab (existing)
     function renderPaymentTable(monthKey) {
         currentMonthKey=monthKey; let tbody=document.getElementById('paymentTbody'); if(!tbody||!facilitators.length) return;
         let searchTerm=document.getElementById('searchPayment')?.value.toLowerCase()||'';
@@ -519,10 +596,8 @@
     function selectAll(checked){ if(!facilitators.length) return; let updates=facilitators.map(f=>({facilitatorId:f.id,newStatus:checked})); pendingChanges={monthKey:currentMonthKey,updates}; document.getElementById('confirmBar').style.display='flex'; renderPaymentTable(currentMonthKey); }
     function kasKeluar(){ let nominal=prompt("Masukkan nominal Kas Keluar (Rp):","0"); if(nominal===null) return; let amount=parseInt(nominal.replace(/\./g,''))||0; if(amount<=0){ alert("Nominal > 0"); return; } let keterangan=prompt("Keterangan Kas Keluar:","Pengeluaran")||"-"; let history=JSON.parse(localStorage.getItem('kas_keluar_history')||'[]'); history.push({ tanggal:new Date().toISOString(), bulan:currentMonthKey, nominal:amount, keterangan }); localStorage.setItem('kas_keluar_history',JSON.stringify(history)); let monthData=getMonthPayments(currentMonthKey); let totalIuran=monthData.filter(p=>p.status).length*DEFAULT_AMOUNT; alert(`💰 Kas Keluar: Rp${amount.toLocaleString()}\nKeterangan: ${keterangan}\nTotal Iuran Bulan Ini: Rp${totalIuran.toLocaleString()}\nSisa Kas: Rp${(totalIuran-amount).toLocaleString()}`); }
     
-    // REKAP BULANAN
     function renderRekap(monthKey){ let tbody=document.getElementById('rekapTbody'); if(!tbody) return; let monthData=getMonthPayments(monthKey); let statusMap=new Map(monthData.map(p=>[p.facilitatorId,p.status])); let lunasCount=0; tbody.innerHTML=''; facilitators.forEach((f,idx)=>{ let isPaid=statusMap.get(f.id)||false; if(isPaid) lunasCount++; let row=tbody.insertRow(); row.insertCell(0).innerText=idx+1; row.insertCell(1).innerText=f.name; row.insertCell(2).innerHTML=`<span class="status-badge ${isPaid?'lunas':'belum'}">${isPaid?'LUNAS':'BELUM'}</span>`; row.insertCell(3).innerText=isPaid?`Rp${DEFAULT_AMOUNT.toLocaleString()}`:'Rp0'; row.insertCell(4).innerText=isPaid?'Sudah bayar':'Belum bayar'; }); let totalIuran=lunasCount*DEFAULT_AMOUNT; let summaryDiv=document.getElementById('rekapSummary'); summaryDiv.innerHTML=`<strong>📊 Rekap Bulan ${monthKey}</strong><br>Total Fasilitator: ${facilitators.length} | Sudah Bayar: ${lunasCount} orang | Belum: ${facilitators.length-lunasCount}<br>Total Iuran Masuk: Rp${totalIuran.toLocaleString()}`; let kasHistory=JSON.parse(localStorage.getItem('kas_keluar_history')||'[]'); let bulanIni=kasHistory.filter(h=>h.bulan===monthKey); if(bulanIni.length){ let totalKeluar=bulanIni.reduce((s,h)=>s+h.nominal,0); summaryDiv.innerHTML+=`<br><span style="color:#f59e0b;">💸 Kas Keluar bulan ini: Rp${totalKeluar.toLocaleString()} (${bulanIni.length} transaksi)</span>`; } }
     
-    // ==================== MATRIX TAHUNAN & ANGGARAN ====================
     function getKasKeluarPerMonth(monthKey){ let history=JSON.parse(localStorage.getItem('kas_keluar_history')||'[]'); let filtered=history.filter(h=>h.bulan===monthKey); let total=filtered.reduce((s,h)=>s+h.nominal,0); let keterangan=filtered.map(h=>`${h.keterangan} (Rp${h.nominal.toLocaleString()})`).join('; ')||'-'; return {total, keterangan}; }
     
     function renderAnnualMatrix(year){
@@ -531,8 +606,7 @@
         let monthlyIuran=new Array(12).fill(0);
         let monthlyKasKeluar=new Array(12).fill(0);
         let monthlyKeterangan=new Array(12).fill('-');
-        // build status per facilitator per month
-        let matrixData=[]; // each {facilitator, statusPerMonth:bool[]}
+        let matrixData=[];
         for(let f of facilitators){
             let statusMonth=[];
             for(let m=0;m<12;m++){
@@ -545,14 +619,12 @@
             }
             matrixData.push({name:f.name, statuses:statusMonth});
         }
-        // kas keluar per bulan
         for(let m=0;m<12;m++){
             let monthKey=`${year}-${String(m+1).padStart(2,'0')}`;
             let {total, keterangan}=getKasKeluarPerMonth(monthKey);
             monthlyKasKeluar[m]=total;
             monthlyKeterangan[m]=keterangan;
         }
-        // Render header
         let thead=document.getElementById('matrixHeader'); let tbody=document.getElementById('matrixBody');
         thead.innerHTML=`<tr><th>Nama Fasilitator</th>${months.map(m=>`<th>${m}</th>`).join('')}</tr>`;
         tbody.innerHTML='';
@@ -570,11 +642,9 @@
             }
             tbody.appendChild(tr);
         }
-        // Hitung total tahun ini & all-time
         let totalIuranTahunIni=monthlyIuran.reduce((a,b)=>a+b,0);
         let totalKasKeluarTahunIni=monthlyKasKeluar.reduce((a,b)=>a+b,0);
         let netTahunIni=totalIuranTahunIni-totalKasKeluarTahunIni;
-        // all-time totals
         let allTimeIuran=0, allTimeKasKeluar=0;
         for(let monthKey in payments){
             let monthData=payments[monthKey];
@@ -584,7 +654,6 @@
         let allKasHistory=JSON.parse(localStorage.getItem('kas_keluar_history')||'[]');
         allTimeKasKeluar=allKasHistory.reduce((s,h)=>s+h.nominal,0);
         let allTimeNet=allTimeIuran-allTimeKasKeluar;
-        // tampilkan panel stats
         let panel=document.getElementById('matrixTotalsPanel');
         panel.innerHTML=`
             <div class="stat-card"><div class="stat-label">📅 TAHUN ${year} - IURAN MASUK</div><div class="stat-value">Rp ${totalIuranTahunIni.toLocaleString()}</div></div>
@@ -594,7 +663,6 @@
             <div class="stat-card"><div class="stat-label">💸 TOTAL KAS KELUAR (SEMUA)</div><div class="stat-value">Rp ${allTimeKasKeluar.toLocaleString()}</div></div>
             <div class="stat-card"><div class="stat-label">🏦 NET KESELURUHAN</div><div class="stat-value">Rp ${allTimeNet.toLocaleString()}</div></div>
         `;
-        // Tabel bulanan kas
         let monthlyTbody=document.getElementById('monthlyKasTbody');
         monthlyTbody.innerHTML='';
         for(let m=0;m<12;m++){
@@ -626,7 +694,6 @@
             }
             rows.push(rowData);
         }
-        // tambah baris info kas keluar
         rows.push(['']); rows.push(['KETERANGAN KAS KELUAR PER BULAN']);
         let kasRow=['Ringkasan'];
         for(let m=0;m<12;m++){
@@ -639,7 +706,6 @@
         let blob=new Blob(["\uFEFF"+csvContent],{type:"text/csv;charset=utf-8"}); let link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`matrix_tahunan_${year}.csv`; link.click(); URL.revokeObjectURL(link.href);
     }
     
-    // export CSV lainnya (tetap dari existing)
     function exportAllPayments(){ let rows=[["bulan","nama_fasilitator","status","nominal"]]; for(let month in payments){ payments[month].forEach(p=>{ let fas=facilitators.find(f=>f.id===p.facilitatorId); if(fas) rows.push([month, fas.name, p.status?"LUNAS":"BELUM", p.status?DEFAULT_AMOUNT:0]); }); } downloadCSV(rows.map(r=>r.join(",")).join("\n"), "semua_iuran.csv"); }
     function exportFacilitatorsCSV(){ let content="nama\n"+facilitators.map(f=>`"${f.name.replace(/"/g,'""')}"`).join("\n"); downloadCSV(content,"daftar_fasilitator.csv"); }
     function exportRekapCSV(monthKey){ let monthData=getMonthPayments(monthKey); let statusMap=new Map(monthData.map(p=>[p.facilitatorId,p.status])); let rows=[["No","Nama Fasilitator","Status","Nominal"]]; facilitators.forEach((f,idx)=>{ let isPaid=statusMap.get(f.id)||false; rows.push([idx+1,f.name,isPaid?"LUNAS":"BELUM",isPaid?DEFAULT_AMOUNT:0]); }); downloadCSV(rows.map(r=>r.join(",")).join("\n"),`rekap_iuran_${monthKey}.csv`); }
@@ -648,23 +714,89 @@
     function importPaymentsFromCSV(csvText){ let lines=csvText.split(/\r?\n/).filter(l=>l.trim()); if(lines.length<2) return; let updated=0; for(let i=1;i<lines.length;i++){ let parts=lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,'')); let bulan=parts[0], nama=parts[1], statusRaw=(parts[2]||'').toUpperCase(); let isLunas=statusRaw.includes('LUNAS')||statusRaw==='1'; let fas=facilitators.find(f=>f.name.toLowerCase()===nama.toLowerCase()); if(fas&&bulan){ if(!payments[bulan]) payments[bulan]=facilitators.map(f=>({facilitatorId:f.id,status:false,amount:0})); let rec=payments[bulan].find(p=>p.facilitatorId===fas.id); if(rec){ rec.status=isLunas; rec.amount=isLunas?DEFAULT_AMOUNT:0; updated++; } } } savePayments(); alert(`Impor selesai, ${updated} data diperbarui`); if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(currentMonthKey); }
     function resetToDefault(){ if(confirm("Reset ke data default Magelang?")){ initDefaultFacilitators(); payments={}; savePayments(); if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(document.getElementById('monthPicker').value); if(document.querySelector('.tab-btn.active')?.dataset.tab==='matrix') renderAnnualMatrix(document.getElementById('matrixYearSelect').value); } }
     
+    // LOGIN HANDLER
+    const PASSWORD = "kasprodamai";
+    function doLogin() {
+        const inputPass = document.getElementById('passwordInput').value;
+        const errorDiv = document.getElementById('loginError');
+        if (inputPass === PASSWORD) {
+            sessionStorage.setItem('kas_admin_logged', 'true');
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+            // Inisialisasi data setelah login
+            loadData();
+            renderPaymentTable('2026-01');
+            // set default tab
+            document.querySelector('.tab-btn.active')?.click();
+        } else {
+            errorDiv.innerText = '❌ Password salah. Akses ditolak.';
+        }
+    }
+    function logout() {
+        sessionStorage.removeItem('kas_admin_logged');
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('appContent').style.display = 'none';
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('loginError').innerText = '';
+    }
+    function checkLoginStatus() {
+        if (sessionStorage.getItem('kas_admin_logged') === 'true') {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+            loadData();
+            renderPaymentTable('2026-01');
+            // set active tab event biar konsisten
+            const activeTab = document.querySelector('.tab-btn.active');
+            if (activeTab) {
+                if (activeTab.dataset.tab === 'payment') renderPaymentTable(document.getElementById('monthPicker').value);
+                else if (activeTab.dataset.tab === 'rekap') renderRekap(document.getElementById('rekapMonthPicker').value);
+                else if (activeTab.dataset.tab === 'matrix') renderAnnualMatrix(document.getElementById('matrixYearSelect').value);
+            } else {
+                renderPaymentTable('2026-01');
+            }
+        } else {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appContent').style.display = 'none';
+        }
+    }
+    
     // EVENT LISTENERS
-    document.addEventListener('DOMContentLoaded',()=>{
-        loadData();
-        const tabs=document.querySelectorAll('.tab-btn'); const contents={ payment:document.getElementById('paymentTab'), rekap:document.getElementById('rekapTab'), matrix:document.getElementById('matrixTab'), batch:document.getElementById('batchTab') };
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutButton');
+        const passwordInput = document.getElementById('passwordInput');
+        loginBtn.addEventListener('click', doLogin);
+        logoutBtn.addEventListener('click', logout);
+        passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') doLogin(); });
+        
+        // Tab switching dan event handler aplikasi (didaftarkan meskipun konten belum tampil, aman)
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = { payment: document.getElementById('paymentTab'), rekap: document.getElementById('rekapTab'), matrix: document.getElementById('matrixTab'), batch: document.getElementById('batchTab') };
         function switchTab(tabId){ Object.values(contents).forEach(c=>c.style.display='none'); contents[tabId].style.display='block'; tabs.forEach(btn=>btn.classList.remove('active')); document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active'); if(tabId==='payment') renderPaymentTable(document.getElementById('monthPicker').value); if(tabId==='rekap') renderRekap(document.getElementById('rekapMonthPicker').value); if(tabId==='matrix') renderAnnualMatrix(document.getElementById('matrixYearSelect').value); }
         tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
-        document.getElementById('loadPaymentBtn').addEventListener('click',()=>renderPaymentTable(document.getElementById('monthPicker').value));
-        document.getElementById('monthPicker').addEventListener('change',()=>renderPaymentTable(document.getElementById('monthPicker').value));
-        document.getElementById('selectAllBtn').addEventListener('click',()=>selectAll(true)); document.getElementById('unselectAllBtn').addEventListener('click',()=>selectAll(false));
-        document.getElementById('kasKeluarBtn').addEventListener('click',kasKeluar); document.getElementById('confirmSaveBtn').addEventListener('click',()=>{ applyPendingChanges(); renderPaymentTable(currentMonthKey); }); document.getElementById('cancelChangesBtn').addEventListener('click',()=>{ discardPendingChanges(); renderPaymentTable(currentMonthKey); }); document.getElementById('headerCheckbox').addEventListener('change',(e)=>selectAll(e.target.checked)); document.getElementById('searchPayment').addEventListener('input',()=>renderPaymentTable(currentMonthKey));
-        document.getElementById('loadRekapBtn').addEventListener('click',()=>renderRekap(document.getElementById('rekapMonthPicker').value)); document.getElementById('rekapMonthPicker').addEventListener('change',()=>renderRekap(document.getElementById('rekapMonthPicker').value)); document.getElementById('exportRekapBtn').addEventListener('click',()=>exportRekapCSV(document.getElementById('rekapMonthPicker').value));
-        document.getElementById('generateMatrixBtn').addEventListener('click',()=>renderAnnualMatrix(document.getElementById('matrixYearSelect').value)); document.getElementById('exportMatrixBtn').addEventListener('click',()=>exportMatrixCSV(document.getElementById('matrixYearSelect').value)); document.getElementById('refreshMatrixBtn').addEventListener('click',()=>renderAnnualMatrix(document.getElementById('matrixYearSelect').value)); document.getElementById('matrixYearSelect').addEventListener('change',()=>renderAnnualMatrix(document.getElementById('matrixYearSelect').value));
-        document.getElementById('exportAllPaymentsBtn').addEventListener('click',exportAllPayments); document.getElementById('exportAllFacilitatorsBtn').addEventListener('click',exportFacilitatorsCSV);
-        document.getElementById('importAllPaymentsFile').addEventListener('change',e=>{ if(e.target.files[0]){ let reader=new FileReader(); reader.onload=ev=>{ importPaymentsFromCSV(ev.target.result); e.target.value=''; }; reader.readAsText(e.target.files[0],'UTF-8'); } });
-        document.getElementById('importFacilitatorFile').addEventListener('change',e=>{ if(e.target.files[0]){ let reader=new FileReader(); reader.onload=ev=>{ importFacilitatorsFromCSV(ev.target.result); e.target.value=''; }; reader.readAsText(e.target.files[0],'UTF-8'); } });
-        document.getElementById('resetDefaultDataBtn').addEventListener('click',resetToDefault);
-        renderPaymentTable('2026-01'); switchTab('payment');
+        document.getElementById('loadPaymentBtn')?.addEventListener('click',()=>renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('monthPicker')?.addEventListener('change',()=>renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('selectAllBtn')?.addEventListener('click',()=>selectAll(true));
+        document.getElementById('unselectAllBtn')?.addEventListener('click',()=>selectAll(false));
+        document.getElementById('kasKeluarBtn')?.addEventListener('click',kasKeluar);
+        document.getElementById('confirmSaveBtn')?.addEventListener('click',()=>{ applyPendingChanges(); renderPaymentTable(currentMonthKey); });
+        document.getElementById('cancelChangesBtn')?.addEventListener('click',()=>{ discardPendingChanges(); renderPaymentTable(currentMonthKey); });
+        document.getElementById('headerCheckbox')?.addEventListener('change',(e)=>selectAll(e.target.checked));
+        document.getElementById('searchPayment')?.addEventListener('input',()=>renderPaymentTable(currentMonthKey));
+        document.getElementById('loadRekapBtn')?.addEventListener('click',()=>renderRekap(document.getElementById('rekapMonthPicker').value));
+        document.getElementById('rekapMonthPicker')?.addEventListener('change',()=>renderRekap(document.getElementById('rekapMonthPicker').value));
+        document.getElementById('exportRekapBtn')?.addEventListener('click',()=>exportRekapCSV(document.getElementById('rekapMonthPicker').value));
+        document.getElementById('generateMatrixBtn')?.addEventListener('click',()=>renderAnnualMatrix(document.getElementById('matrixYearSelect').value));
+        document.getElementById('exportMatrixBtn')?.addEventListener('click',()=>exportMatrixCSV(document.getElementById('matrixYearSelect').value));
+        document.getElementById('refreshMatrixBtn')?.addEventListener('click',()=>renderAnnualMatrix(document.getElementById('matrixYearSelect').value));
+        document.getElementById('matrixYearSelect')?.addEventListener('change',()=>renderAnnualMatrix(document.getElementById('matrixYearSelect').value));
+        document.getElementById('exportAllPaymentsBtn')?.addEventListener('click',exportAllPayments);
+        document.getElementById('exportAllFacilitatorsBtn')?.addEventListener('click',exportFacilitatorsCSV);
+        document.getElementById('importAllPaymentsFile')?.addEventListener('change',e=>{ if(e.target.files[0]){ let reader=new FileReader(); reader.onload=ev=>{ importPaymentsFromCSV(ev.target.result); e.target.value=''; }; reader.readAsText(e.target.files[0],'UTF-8'); } });
+        document.getElementById('importFacilitatorFile')?.addEventListener('change',e=>{ if(e.target.files[0]){ let reader=new FileReader(); reader.onload=ev=>{ importFacilitatorsFromCSV(ev.target.result); e.target.value=''; }; reader.readAsText(e.target.files[0],'UTF-8'); } });
+        document.getElementById('resetDefaultDataBtn')?.addEventListener('click',resetToDefault);
+        
+        checkLoginStatus();
     });
 </script>
 </body>

@@ -45,10 +45,25 @@
         .login-card input {
             width: 100%;
             padding: 12px 16px;
-            margin: 16px 0;
+            margin: 8px 0;
             border: 1px solid #cbd5e1;
             border-radius: 60px;
             font-size: 1rem;
+        }
+        .show-pwd-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0 16px;
+            font-size: 0.85rem;
+            color: #334155;
+            justify-content: flex-start;
+        }
+        .show-pwd-container input {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
         }
         .login-card button {
             background: #1e6f5c;
@@ -394,12 +409,16 @@
 </head>
 <body>
 
-<!-- LAYAR LOGIN -->
+<!-- LAYAR LOGIN dengan fitur "Perlihatkan sandi" -->
 <div id="loginScreen" class="login-overlay">
     <div class="login-card">
         <h2>🔐 Akses Bendahara</h2>
         <p>Masukkan password untuk mengelola Kas Fasilitator Magelang</p>
         <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
+        <div class="show-pwd-container">
+            <input type="checkbox" id="showPasswordCheckbox">
+            <label for="showPasswordCheckbox">👁️ Perlihatkan sandi</label>
+        </div>
         <button id="loginBtn">Login</button>
         <div id="loginError" class="error-msg"></div>
     </div>
@@ -714,10 +733,23 @@
     function importPaymentsFromCSV(csvText){ let lines=csvText.split(/\r?\n/).filter(l=>l.trim()); if(lines.length<2) return; let updated=0; for(let i=1;i<lines.length;i++){ let parts=lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,'')); let bulan=parts[0], nama=parts[1], statusRaw=(parts[2]||'').toUpperCase(); let isLunas=statusRaw.includes('LUNAS')||statusRaw==='1'; let fas=facilitators.find(f=>f.name.toLowerCase()===nama.toLowerCase()); if(fas&&bulan){ if(!payments[bulan]) payments[bulan]=facilitators.map(f=>({facilitatorId:f.id,status:false,amount:0})); let rec=payments[bulan].find(p=>p.facilitatorId===fas.id); if(rec){ rec.status=isLunas; rec.amount=isLunas?DEFAULT_AMOUNT:0; updated++; } } } savePayments(); alert(`Impor selesai, ${updated} data diperbarui`); if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(currentMonthKey); }
     function resetToDefault(){ if(confirm("Reset ke data default Magelang?")){ initDefaultFacilitators(); payments={}; savePayments(); if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(document.getElementById('monthPicker').value); if(document.querySelector('.tab-btn.active')?.dataset.tab==='matrix') renderAnnualMatrix(document.getElementById('matrixYearSelect').value); } }
     
-    // LOGIN HANDLER
+    // LOGIN HANDLER + SHOW PASSWORD
     const PASSWORD = "kasprodamai";
+    const passwordInput = document.getElementById('passwordInput');
+    const showPasswordCheckbox = document.getElementById('showPasswordCheckbox');
+    
+    // Fungsi toggle show password
+    function togglePasswordVisibility() {
+        if (showPasswordCheckbox.checked) {
+            passwordInput.type = 'text';
+        } else {
+            passwordInput.type = 'password';
+        }
+    }
+    showPasswordCheckbox.addEventListener('change', togglePasswordVisibility);
+    
     function doLogin() {
-        const inputPass = document.getElementById('passwordInput').value;
+        const inputPass = passwordInput.value;
         const errorDiv = document.getElementById('loginError');
         if (inputPass === PASSWORD) {
             sessionStorage.setItem('kas_admin_logged', 'true');
@@ -736,8 +768,11 @@
         sessionStorage.removeItem('kas_admin_logged');
         document.getElementById('loginScreen').style.display = 'flex';
         document.getElementById('appContent').style.display = 'none';
-        document.getElementById('passwordInput').value = '';
+        passwordInput.value = '';
         document.getElementById('loginError').innerText = '';
+        // reset checkbox show password
+        showPasswordCheckbox.checked = false;
+        passwordInput.type = 'password';
     }
     function checkLoginStatus() {
         if (sessionStorage.getItem('kas_admin_logged') === 'true') {
@@ -745,7 +780,6 @@
             document.getElementById('appContent').style.display = 'block';
             loadData();
             renderPaymentTable('2026-01');
-            // set active tab event biar konsisten
             const activeTab = document.querySelector('.tab-btn.active');
             if (activeTab) {
                 if (activeTab.dataset.tab === 'payment') renderPaymentTable(document.getElementById('monthPicker').value);
@@ -764,12 +798,11 @@
     document.addEventListener('DOMContentLoaded', () => {
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutButton');
-        const passwordInput = document.getElementById('passwordInput');
         loginBtn.addEventListener('click', doLogin);
         logoutBtn.addEventListener('click', logout);
         passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') doLogin(); });
         
-        // Tab switching dan event handler aplikasi (didaftarkan meskipun konten belum tampil, aman)
+        // Tab switching dan event handler aplikasi
         const tabs = document.querySelectorAll('.tab-btn');
         const contents = { payment: document.getElementById('paymentTab'), rekap: document.getElementById('rekapTab'), matrix: document.getElementById('matrixTab'), batch: document.getElementById('batchTab') };
         function switchTab(tabId){ Object.values(contents).forEach(c=>c.style.display='none'); contents[tabId].style.display='block'; tabs.forEach(btn=>btn.classList.remove('active')); document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active'); if(tabId==='payment') renderPaymentTable(document.getElementById('monthPicker').value); if(tabId==='rekap') renderRekap(document.getElementById('rekapMonthPicker').value); if(tabId==='matrix') renderAnnualMatrix(document.getElementById('matrixYearSelect').value); }

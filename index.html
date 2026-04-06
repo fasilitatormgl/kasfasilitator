@@ -203,46 +203,24 @@
             flex: 1;
             min-width: 200px;
         }
-        .summary-stats {
-            background: #f0fdf4;
+        .total-box {
+            background: #f1f5f9;
             padding: 12px 20px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-            font-weight: 500;
+            border-radius: 40px;
+            font-weight: 600;
+            display: inline-block;
         }
-        .summary-stats span {
-            color: #1e6f5c;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
+        .confirm-bar {
+            background: #fef9e3;
+            border-left: 4px solid #f59e0b;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 16px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .modal {
-            background: white;
-            padding: 24px;
-            border-radius: 28px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-        }
-        .modal-buttons {
-            display: flex;
+            flex-wrap: wrap;
             gap: 12px;
-            justify-content: center;
-            margin-top: 20px;
         }
         footer {
             text-align: center;
@@ -250,13 +228,6 @@
             padding: 1rem;
             color: #6c757d;
             font-size: 0.8rem;
-        }
-        .cash-out-section {
-            background: #fff7ed;
-            border-left: 4px solid #f59e0b;
-            padding: 16px;
-            border-radius: 20px;
-            margin-bottom: 20px;
         }
         @media (max-width: 720px) {
             body { padding: 12px; }
@@ -271,16 +242,16 @@
             <h1>📋 Kas Fasilitator Magelang</h1>
             <div class="sub">Iuran per orang per bulan: <strong>Rp10.000</strong> • Total Fasilitator: <span id="totalFasilitatorCount">0</span> orang</div>
         </div>
-        <div class="badge">💰 Kas Masuk • Kas Keluar • Rekap Bulanan</div>
+        <div class="badge">🗺️ Batch Input • Spreadsheet • Rekap Bulanan</div>
     </div>
 
     <div class="tabs">
         <button class="tab-btn active" data-tab="payment">💰 Catat Iuran per Bulan</button>
-        <button class="tab-btn" data-tab="recap">📊 Rekap & Laporan</button>
-        <button class="tab-btn" data-tab="cashout">💸 Kas Keluar</button>
+        <button class="tab-btn" data-tab="rekap">📊 Rekap & Laporan</button>
+        <button class="tab-btn" data-tab="batch">📂 Batch & Spreadsheet</button>
     </div>
 
-    <!-- TAB 1: Pencatatan Iuran -->
+    <!-- TAB 1: Pencatatan Iuran dengan Select All & Kas Keluar -->
     <div id="paymentTab" class="tab-content">
         <div class="card">
             <div class="card-title">💰 Iuran Bulanan (Rp10.000/orang)</div>
@@ -289,122 +260,92 @@
                     <label>Pilih Bulan (Tahun-Bulan)</label>
                     <input type="month" id="monthPicker" value="2026-01">
                 </div>
-                <button id="loadPaymentBtn">📋 Muat Data</button>
-                <button id="selectAllBtn" class="secondary">✅ Select All</button>
-                <button id="unselectAllBtn" class="secondary">❌ Unselect All</button>
-                <button id="exportPaymentMonthBtn" class="secondary">📎 Export CSV Bulan Ini</button>
-            </div>
-            <div class="summary-stats" id="paymentSummary">
-                <div>✅ Lunas: <span id="lunasCount">0</span> orang</div>
-                <div>❌ Belum: <span id="belumCount">0</span> orang</div>
-                <div>💰 Total Kas Masuk: <span id="totalMasuk">Rp0</span></div>
+                <button id="loadPaymentBtn">📋 Muat Data Bulan Ini</button>
+                <button id="selectAllBtn" class="secondary">✅ Select All (Bayar Semua)</button>
+                <button id="unselectAllBtn" class="secondary">❌ Unselect All (Batal Semua)</button>
+                <button id="kasKeluarBtn" class="warning">💰 Kas Keluar (Tarik Dana)</button>
             </div>
             <div class="search-box">
-                <input type="text" id="searchPayment" placeholder="Cari nama fasilitator...">
+                <input type="text" id="searchPayment" placeholder="Cari nama fasilitator..." style="border-radius:40px;">
             </div>
+            
+            <!-- Konfirmasi Bar -->
+            <div id="confirmBar" class="confirm-bar" style="display: none;">
+                <span>⚠️ Ada perubahan pada checklist. Simpan perubahan?</span>
+                <div>
+                    <button id="confirmSaveBtn" style="background:#1e6f5c;">✅ Simpan</button>
+                    <button id="cancelChangesBtn" class="secondary" style="margin-left:8px;">Batal</button>
+                </div>
+            </div>
+            
             <div class="scrollable-table">
                 <table id="paymentTable">
                     <thead>
                         <tr>
-                            <th style="width:50px"><input type="checkbox" id="headerCheckbox"></th>
-                            <th>No</th>
-                            <th>Nama Lengkap</th>
-                            <th>Status Bayar</th>
-                            <th>Nominal (Rp)</th>
+                            <th style="width:50px"><input type="checkbox" id="headerCheckbox" title="Pilih semua"></th>
+                            <th>No</th><th>Nama Lengkap</th><th>Status Bayar</th><th>Nominal (Rp)</th>
                         </tr>
                     </thead>
                     <tbody id="paymentTbody"></tbody>
                 </table>
             </div>
-            <div class="flex-row" style="justify-content: flex-end; margin-top: 16px;">
-                <button id="saveChangesBtn" style="background: #1e6f5c; padding: 10px 28px;">💾 Simpan Perubahan</button>
-            </div>
             <div class="info-text">
-                ✅ Centang checklist = LUNAS (Rp10.000). Gunakan Select All untuk mempercepat. Klik <strong>Simpan Perubahan</strong> untuk mengkonfirmasi dan menyimpan data.
+                ✅ Centang checklist untuk menandai LUNAS (Rp10.000). Setelah selesai memilih, klik <strong>Simpan</strong> di bar kuning untuk mengkonfirmasi perubahan. Gunakan Select All untuk membayar semua fasilitator sekaligus.
             </div>
         </div>
     </div>
 
-    <!-- TAB 2: Rekap & Laporan -->
-    <div id="recapTab" class="tab-content" style="display:none;">
+    <!-- TAB 2: REKAP per BULAN (sudah bayar / belum) -->
+    <div id="rekapTab" class="tab-content" style="display:none;">
         <div class="card">
-            <div class="card-title">📊 Rekap Pembayaran per Bulan</div>
-            <div class="grid-actions">
-                <button id="refreshRecapBtn">🔄 Refresh Rekap</button>
-                <button id="exportRecapBtn" class="secondary">📎 Export Rekap CSV</button>
-            </div>
-            <div class="scrollable-table">
-                <table id="recapTable">
-                    <thead>
-                        <tr>
-                            <th>Bulan</th>
-                            <th>Total Fasilitator</th>
-                            <th>Jumlah Lunas</th>
-                            <th>Jumlah Belum</th>
-                            <th>Total Kas Masuk</th>
-                            <th>Total Kas Keluar</th>
-                            <th>Saldo Akhir</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recapTbody"></tbody>
-                </table>
-            </div>
-            <div class="info-text">
-                📌 Rekap menampilkan iuran per bulan + pengeluaran (kas keluar). Saldo = total pemasukan iuran - total pengeluaran.
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 3: Kas Keluar -->
-    <div id="cashoutTab" class="tab-content" style="display:none;">
-        <div class="card">
-            <div class="card-title">💸 Catat Pengeluaran Kas</div>
-            <div class="cash-out-section">
-                <div class="flex-row">
-                    <div class="form-group" style="flex:2">
-                        <label>Tanggal</label>
-                        <input type="date" id="cashoutDate" value="">
-                    </div>
-                    <div class="form-group" style="flex:3">
-                        <label>Keterangan</label>
-                        <input type="text" id="cashoutDesc" placeholder="Contoh: Beli ATK, Transportasi...">
-                    </div>
-                    <div class="form-group">
-                        <label>Jumlah (Rp)</label>
-                        <input type="number" id="cashoutAmount" placeholder="0">
-                    </div>
-                    <div class="form-group">
-                        <label>&nbsp;</label>
-                        <button id="addCashoutBtn" class="warning">➕ Tambah Pengeluaran</button>
-                    </div>
+            <div class="card-title">📊 Rekap Iuran per Bulan</div>
+            <div class="flex-row">
+                <div class="form-group">
+                    <label>Pilih Bulan untuk Detail Rekap</label>
+                    <input type="month" id="rekapMonthPicker" value="2026-01">
                 </div>
+                <button id="loadRekapBtn">📋 Tampilkan Rekap</button>
+                <button id="exportRekapBtn" class="secondary">📎 Export CSV Rekap Bulan Ini</button>
             </div>
-            <div class="card-title" style="margin-top: 20px;">📜 Riwayat Kas Keluar</div>
             <div class="scrollable-table">
-                <table id="cashoutTable">
+                <table id="rekapTable">
                     <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Keterangan</th>
-                            <th>Jumlah (Rp)</th>
-                            <th>Bulan terkait</th>
-                            <th>Aksi</th>
-                        </tr>
+                        <tr><th>No</th><th>Nama Fasilitator</th><th>Status</th><th>Nominal Dibayar</th><th>Keterangan</th></tr>
                     </thead>
-                    <tbody id="cashoutTbody"></tbody>
+                    <tbody id="rekapTbody"></tbody>
                 </table>
             </div>
+            <div class="info-text" id="rekapSummary"></div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Batch & Spreadsheet -->
+    <div id="batchTab" class="tab-content" style="display:none;">
+        <div class="card">
+            <div class="card-title">📁 Integrasi Spreadsheet (CSV)</div>
+            <p>Gunakan CSV untuk update massal atau backup. Edit di Excel / Google Sheets lalu impor kembali.</p>
+            <div class="grid-actions">
+                <button id="exportAllPaymentsBtn">📎 Ekspor SEMUA Pembayaran (Semua Bulan)</button>
+                <button id="exportAllFacilitatorsBtn" class="secondary">📇 Ekspor Data Fasilitator</button>
+                <label for="importAllPaymentsFile" class="secondary" style="background:#e2e8f0; padding:8px 14px; border-radius:40px; cursor:pointer;">📂 Impor Pembayaran (CSV)</label>
+                <input type="file" id="importAllPaymentsFile" accept=".csv" style="display:none;">
+                <label for="importFacilitatorFile" class="secondary" style="background:#e2e8f0; padding:8px 14px; border-radius:40px; cursor:pointer;">📂 Impor Daftar Fasilitator</label>
+                <input type="file" id="importFacilitatorFile" accept=".csv" style="display:none;">
+                <button id="resetDefaultDataBtn" class="secondary">🔄 Reset ke Data Default</button>
+            </div>
             <div class="info-text">
-                💡 Pengeluaran akan mengurangi saldo pada rekap bulan yang dipilih. Pilih bulan terkait saat menambah pengeluaran.
+                📌 <strong>Format Impor Pembayaran:</strong> bulan (YYYY-MM), nama_fasilitator, status (LUNAS/BELUM)<br>
+                📌 <strong>Format Fasilitator CSV:</strong> nama (header opsional)<br>
+                🔁 Semua data tersimpan di browser (localStorage).
             </div>
         </div>
     </div>
-    <footer>Aplikasi Kas Fasilitator Magelang | Data tersimpan di perangkat Anda</footer>
+    <footer>Aplikasi Kas Fasilitator Magelang | Data tersimpan di perangkat Anda | Konfirmasi perubahan checklist</footer>
 </div>
 
 <script>
-    // ======================= DATA FASILITATOR (LENGKAP) =======================
-    const FACILITATORS_DATA = [
+    // ======================= DATA DEFAULT LENGKAP =======================
+    const DEFAULT_FACILITATORS_DATA = [
         "Muhammad Rajasa Danny Alamsyah, S.H.", "Ardy Hudhatama, S.Pd.", "Ardian Dwi Chandra, S.M.", "Kharisma Putri Pertiwi, A.Md.T",
         "Nurul Afifa Dian Segari, S.P", "Febrian Agus Partomo, S.Sos.", "Haning Karunia Putra, A.Md.Ak.", "Aulia Trisna Agustin, S.H.",
         "Didik Subiyantoro, S.E.", "Febriana Dewi Utami, S.H.", "Ida Kumia Kalpikaratri, S.Pd.", "Dhevi Arishandy, S.P.",
@@ -424,226 +365,329 @@
         "Zaenal Arifin, S.T.", "Wahyu Galih Saputra, S.H.", "Lia Shabilla, S.Sos.", "Vega Sofle Kharisrma Putri, S.M.",
         "Clarisa Sasti Bintoro, S.E.", "Kalpataru Muda Fathlka, S.E."
     ];
+
+    let facilitators = [];      // { id, name }
+    let payments = {};          // "YYYY-MM" -> [{ facilitatorId, status, amount }]
     
-    let facilitators = [];
-    let payments = {};          // "YYYY-MM" -> { statusMap: { id: bool } }
-    let cashOuts = [];          // [{ id, date, description, amount, month }]
+    // Untuk tracking perubahan pending
+    let pendingChanges = null;  // { monthKey, updates: [{ facilitatorId, newStatus }] }
+    let currentMonthKey = "";
     
     const DEFAULT_AMOUNT = 10000;
-    const STORAGE_KEYS = { PAYMENTS: 'kas_payments_magelang', CASHS: 'kas_cashout_magelang' };
-    
-    function initData() {
-        facilitators = FACILITATORS_DATA.map((name, idx) => ({ id: idx + 1, name: name }));
-        document.getElementById('totalFasilitatorCount').innerText = facilitators.length;
-    }
-    
-    function loadPayments() {
-        const stored = localStorage.getItem(STORAGE_KEYS.PAYMENTS);
-        if (stored) payments = JSON.parse(stored);
-        else payments = {};
-    }
-    
-    function loadCashOuts() {
-        const stored = localStorage.getItem(STORAGE_KEYS.CASHS);
-        if (stored) cashOuts = JSON.parse(stored);
-        else cashOuts = [];
-    }
-    
+    const STORAGE_KEYS = {
+        FACILITATORS: 'kas_facilitators_magelang_simple',
+        PAYMENTS: 'kas_payments_magelang_simple'
+    };
+
+    function saveFacilitators() { localStorage.setItem(STORAGE_KEYS.FACILITATORS, JSON.stringify(facilitators)); updateTotalCount(); }
     function savePayments() { localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments)); }
-    function saveCashOuts() { localStorage.setItem(STORAGE_KEYS.CASHS, JSON.stringify(cashOuts)); }
-    
-    function getMonthStatusMap(monthKey) {
+    function updateTotalCount() { 
+        const countEl = document.getElementById('totalFasilitatorCount');
+        if(countEl) countEl.innerText = facilitators.length;
+    }
+
+    function initDefaultFacilitators() {
+        facilitators = DEFAULT_FACILITATORS_DATA.map((name, idx) => ({
+            id: idx + 1,
+            name: name
+        }));
+        saveFacilitators();
+    }
+
+    function loadData() {
+        const storedFac = localStorage.getItem(STORAGE_KEYS.FACILITATORS);
+        if (storedFac) {
+            facilitators = JSON.parse(storedFac);
+            if (!facilitators.length) initDefaultFacilitators();
+        } else {
+            initDefaultFacilitators();
+        }
+        const storedPay = localStorage.getItem(STORAGE_KEYS.PAYMENTS);
+        if (storedPay) payments = JSON.parse(storedPay);
+        else payments = {};
+        savePayments();
+        updateTotalCount();
+    }
+
+    function getMonthPayments(monthKey) {
         if (!payments[monthKey]) {
-            const map = {};
-            facilitators.forEach(f => { map[f.id] = false; });
-            payments[monthKey] = map;
+            payments[monthKey] = facilitators.map(f => ({ facilitatorId: f.id, status: false, amount: 0 }));
             savePayments();
         }
         return payments[monthKey];
     }
-    
-    function updatePaymentStatus(monthKey, facilitatorId, status) {
-        let map = payments[monthKey];
-        if (!map) { map = {}; facilitators.forEach(f => { map[f.id] = false; }); payments[monthKey] = map; }
-        map[facilitatorId] = status;
+
+    // Simpan perubahan dari pending
+    function applyPendingChanges() {
+        if (!pendingChanges) return false;
+        const { monthKey, updates } = pendingChanges;
+        let monthData = payments[monthKey];
+        if (!monthData) {
+            monthData = facilitators.map(f => ({ facilitatorId: f.id, status: false, amount: 0 }));
+            payments[monthKey] = monthData;
+        }
+        for (let upd of updates) {
+            const record = monthData.find(p => p.facilitatorId === upd.facilitatorId);
+            if (record) {
+                record.status = upd.newStatus;
+                record.amount = upd.newStatus ? DEFAULT_AMOUNT : 0;
+            }
+        }
         savePayments();
+        pendingChanges = null;
+        document.getElementById('confirmBar').style.display = 'none';
+        return true;
     }
-    
-    let pendingChanges = {}; // temporary changes before save
-    
+
+    function discardPendingChanges() {
+        pendingChanges = null;
+        document.getElementById('confirmBar').style.display = 'none';
+        // reload tampilan
+        if (document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') {
+            renderPaymentTable(currentMonthKey);
+        }
+    }
+
+    function addPendingUpdate(facilitatorId, newStatus) {
+        if (!pendingChanges) {
+            pendingChanges = { monthKey: currentMonthKey, updates: [] };
+        }
+        // cek apakah sudah ada update untuk id yang sama
+        const existing = pendingChanges.updates.find(u => u.facilitatorId === facilitatorId);
+        if (existing) {
+            existing.newStatus = newStatus;
+        } else {
+            pendingChanges.updates.push({ facilitatorId, newStatus });
+        }
+        document.getElementById('confirmBar').style.display = 'flex';
+    }
+
+    // render tabel pembayaran dengan status dari original + pendingChanges
     function renderPaymentTable(monthKey) {
         const tbody = document.getElementById('paymentTbody');
+        if (!tbody || !facilitators.length) return;
+        currentMonthKey = monthKey;
         const searchTerm = document.getElementById('searchPayment')?.value.toLowerCase() || '';
-        const statusMap = getMonthStatusMap(monthKey);
-        const filtered = facilitators.filter(f => f.name.toLowerCase().includes(searchTerm));
+        const filteredFac = facilitators.filter(f => f.name.toLowerCase().includes(searchTerm));
+        const originalMonthData = getMonthPayments(monthKey);
+        const statusMapOrig = new Map(originalMonthData.map(p => [p.facilitatorId, p.status]));
+        
+        // Buat status yang sudah digabung dengan pending
+        const displayStatus = new Map();
+        for (let f of facilitators) {
+            let status = statusMapOrig.get(f.id) || false;
+            if (pendingChanges && pendingChanges.monthKey === monthKey) {
+                const pending = pendingChanges.updates.find(u => u.facilitatorId === f.id);
+                if (pending) status = pending.newStatus;
+            }
+            displayStatus.set(f.id, status);
+        }
+        
         tbody.innerHTML = '';
-        let lunasCount = 0;
-        filtered.forEach((f, idx) => {
-            const isPaid = pendingChanges[monthKey]?.[f.id] !== undefined ? pendingChanges[monthKey][f.id] : (statusMap[f.id] || false);
-            if (isPaid) lunasCount++;
+        filteredFac.forEach((f, idx) => {
+            const isPaid = displayStatus.get(f.id) || false;
             const row = tbody.insertRow();
+            // checkbox
             const chkCell = row.insertCell(0);
             const chk = document.createElement('input');
-            chk.type = 'checkbox'; chk.checked = isPaid; chk.className = 'checkbox-style';
+            chk.type = 'checkbox';
+            chk.checked = isPaid;
+            chk.className = 'checkbox-style';
             chk.addEventListener('change', (e) => {
-                if (!pendingChanges[monthKey]) pendingChanges[monthKey] = {};
-                pendingChanges[monthKey][f.id] = e.target.checked;
-                renderPaymentTable(monthKey);
+                addPendingUpdate(f.id, e.target.checked);
+                // update tampilan checkbox lokal tanpa reload penuh
+                const newStatus = e.target.checked;
+                const labelSpan = row.querySelector('.status-span');
+                if (labelSpan) {
+                    labelSpan.innerText = newStatus ? ' LUNAS' : ' BELUM';
+                    labelSpan.className = `status-badge ${newStatus ? 'lunas' : 'belum'} status-span`;
+                }
+                const nominalSpan = row.querySelector('.nominal-span');
+                if (nominalSpan) nominalSpan.innerText = newStatus ? `Rp${DEFAULT_AMOUNT.toLocaleString()}` : 'Rp0';
             });
             chkCell.appendChild(chk);
-            row.insertCell(1).innerText = f.id;
+            
+            row.insertCell(1).innerText = facilitators.findIndex(orig => orig.id === f.id) + 1;
             row.insertCell(2).innerText = f.name;
             const statusCell = row.insertCell(3);
             const labelSpan = document.createElement('span');
             labelSpan.innerText = isPaid ? ' LUNAS' : ' BELUM';
-            labelSpan.className = `status-badge ${isPaid ? 'lunas' : 'belum'}`;
+            labelSpan.className = `status-badge ${isPaid ? 'lunas' : 'belum'} status-span`;
             statusCell.appendChild(labelSpan);
-            row.insertCell(4).innerText = isPaid ? `Rp${DEFAULT_AMOUNT.toLocaleString()}` : 'Rp0';
+            const nominalCell = row.insertCell(4);
+            const nominalSpan = document.createElement('span');
+            nominalSpan.innerText = isPaid ? `Rp${DEFAULT_AMOUNT.toLocaleString()}` : 'Rp0';
+            nominalSpan.className = 'nominal-span';
+            nominalCell.appendChild(nominalSpan);
         });
-        const totalLunas = filtered.filter(f => {
-            const isPaid = pendingChanges[monthKey]?.[f.id] !== undefined ? pendingChanges[monthKey][f.id] : (statusMap[f.id] || false);
-            return isPaid;
-        }).length;
-        const totalBelum = filtered.length - totalLunas;
-        const totalNominal = totalLunas * DEFAULT_AMOUNT;
-        document.getElementById('lunasCount').innerText = totalLunas;
-        document.getElementById('belumCount').innerText = totalBelum;
-        document.getElementById('totalMasuk').innerHTML = `Rp${totalNominal.toLocaleString()}`;
         
-        const headerCheckbox = document.getElementById('headerCheckbox');
-        if (headerCheckbox) {
-            const allChecked = filtered.length > 0 && filtered.every(f => {
-                const val = pendingChanges[monthKey]?.[f.id] !== undefined ? pendingChanges[monthKey][f.id] : (statusMap[f.id] || false);
-                return val;
-            });
-            headerCheckbox.checked = allChecked;
-            headerCheckbox.indeterminate = !allChecked && filtered.some(f => {
-                const val = pendingChanges[monthKey]?.[f.id] !== undefined ? pendingChanges[monthKey][f.id] : (statusMap[f.id] || false);
-                return val;
-            });
-            headerCheckbox.onchange = (e) => {
-                const isChecked = e.target.checked;
-                if (!pendingChanges[monthKey]) pendingChanges[monthKey] = {};
-                filtered.forEach(f => { pendingChanges[monthKey][f.id] = isChecked; });
-                renderPaymentTable(monthKey);
-            };
+        // Update header checkbox state
+        const allCheckboxes = document.querySelectorAll('#paymentTbody input[type="checkbox"]');
+        const headerChk = document.getElementById('headerCheckbox');
+        if (headerChk) {
+            const allChecked = allCheckboxes.length > 0 && Array.from(allCheckboxes).every(cb => cb.checked);
+            headerChk.checked = allChecked;
+            headerChk.indeterminate = !allChecked && Array.from(allCheckboxes).some(cb => cb.checked);
         }
     }
-    
-    function saveChangesWithConfirm(monthKey) {
-        if (!pendingChanges[monthKey] || Object.keys(pendingChanges[monthKey]).length === 0) {
-            alert('Tidak ada perubahan yang perlu disimpan.');
+
+    // Select All / Unselect All dengan pending
+    function selectAll(checked) {
+        if (!facilitators.length) return;
+        const updates = [];
+        for (let f of facilitators) {
+            updates.push({ facilitatorId: f.id, newStatus: checked });
+        }
+        pendingChanges = { monthKey: currentMonthKey, updates: updates };
+        document.getElementById('confirmBar').style.display = 'flex';
+        renderPaymentTable(currentMonthKey);
+    }
+
+    // Kas Keluar: mencatat pengeluaran (misal penarikan dana)
+    function kasKeluar() {
+        let nominal = prompt("Masukkan nominal Kas Keluar (Rp):", "0");
+        if (nominal === null) return;
+        let amount = parseInt(nominal.replace(/\./g, '')) || 0;
+        if (amount <= 0) {
+            alert("Nominal harus lebih dari 0");
             return;
         }
-        if (confirm('Simpan perubahan pembayaran untuk bulan ini? Data akan tersimpan secara permanen.')) {
-            const currentMap = getMonthStatusMap(monthKey);
-            for (const [id, status] of Object.entries(pendingChanges[monthKey])) {
-                currentMap[parseInt(id)] = status;
+        let keterangan = prompt("Keterangan Kas Keluar (misal: beli ATK, transport):", "Pengeluaran");
+        if (keterangan === null) keterangan = "-";
+        
+        // Simpan history kas keluar di localStorage terpisah
+        let kasKeluarHistory = localStorage.getItem('kas_keluar_history');
+        let history = kasKeluarHistory ? JSON.parse(kasKeluarHistory) : [];
+        history.push({
+            tanggal: new Date().toISOString(),
+            bulan: currentMonthKey,
+            nominal: amount,
+            keterangan: keterangan
+        });
+        localStorage.setItem('kas_keluar_history', JSON.stringify(history));
+        
+        // Hitung total iuran masuk untuk bulan ini
+        let monthData = getMonthPayments(currentMonthKey);
+        let totalIuran = monthData.filter(p => p.status).length * DEFAULT_AMOUNT;
+        alert(`💰 Kas Keluar: Rp${amount.toLocaleString()}\nKeterangan: ${keterangan}\nTotal Iuran Bulan Ini: Rp${totalIuan.toLocaleString()}\nSisa Kas: Rp${(totalIuran - amount).toLocaleString()}`);
+    }
+
+    // REKAP per bulan
+    function renderRekap(monthKey) {
+        const tbody = document.getElementById('rekapTbody');
+        if (!tbody) return;
+        const monthData = getMonthPayments(monthKey);
+        const statusMap = new Map(monthData.map(p => [p.facilitatorId, p.status]));
+        let lunasCount = 0;
+        tbody.innerHTML = '';
+        facilitators.forEach((f, idx) => {
+            const isPaid = statusMap.get(f.id) || false;
+            if (isPaid) lunasCount++;
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = idx+1;
+            row.insertCell(1).innerText = f.name;
+            row.insertCell(2).innerHTML = `<span class="status-badge ${isPaid ? 'lunas' : 'belum'}">${isPaid ? 'LUNAS' : 'BELUM'}</span>`;
+            row.insertCell(3).innerText = isPaid ? `Rp${DEFAULT_AMOUNT.toLocaleString()}` : 'Rp0';
+            row.insertCell(4).innerText = isPaid ? 'Sudah bayar' : 'Belum bayar';
+        });
+        const totalIuran = lunasCount * DEFAULT_AMOUNT;
+        const summaryDiv = document.getElementById('rekapSummary');
+        summaryDiv.innerHTML = `<strong>📊 Rekap Bulan ${monthKey}</strong><br>Total Fasilitator: ${facilitators.length} | Sudah Bayar: ${lunasCount} orang | Belum Bayar: ${facilitators.length - lunasCount} orang<br>Total Iuran Masuk: Rp${totalIuran.toLocaleString()}`;
+        
+        // Tampilkan history kas keluar untuk bulan ini
+        const kasHistory = localStorage.getItem('kas_keluar_history');
+        if (kasHistory) {
+            let history = JSON.parse(kasHistory);
+            let bulanIni = history.filter(h => h.bulan === monthKey);
+            if (bulanIni.length > 0) {
+                let totalKeluar = bulanIni.reduce((sum, h) => sum + h.nominal, 0);
+                summaryDiv.innerHTML += `<br><span style="color:#f59e0b;">💸 Kas Keluar bulan ini: Rp${totalKeluar.toLocaleString()} (${bulanIni.length} transaksi)</span>`;
             }
-            payments[monthKey] = currentMap;
-            delete pendingChanges[monthKey];
+        }
+    }
+
+    // Export rekap bulan tertentu CSV
+    function exportRekapCSV(monthKey) {
+        const monthData = getMonthPayments(monthKey);
+        const statusMap = new Map(monthData.map(p => [p.facilitatorId, p.status]));
+        let rows = [["No", "Nama Fasilitator", "Status", "Nominal"]];
+        facilitators.forEach((f, idx) => {
+            const isPaid = statusMap.get(f.id) || false;
+            rows.push([idx+1, f.name, isPaid ? "LUNAS" : "BELUM", isPaid ? DEFAULT_AMOUNT : 0]);
+        });
+        downloadCSV(rows.map(r => r.join(",")).join("\n"), `rekap_iuran_${monthKey}.csv`);
+    }
+
+    // Export semua pembayaran
+    function exportAllPayments() {
+        let rows = [["bulan", "nama_fasilitator", "status", "nominal"]];
+        for (let month in payments) {
+            payments[month].forEach(p => {
+                let fas = facilitators.find(f => f.id === p.facilitatorId);
+                if (fas) rows.push([month, fas.name, p.status ? "LUNAS" : "BELUM", p.status ? DEFAULT_AMOUNT : 0]);
+            });
+        }
+        downloadCSV(rows.map(r => r.join(",")).join("\n"), "semua_iuran.csv");
+    }
+
+    function exportFacilitatorsCSV() {
+        let content = "nama\n" + facilitators.map(f => `"${f.name.replace(/"/g, '""')}"`).join("\n");
+        downloadCSV(content, "daftar_fasilitator.csv");
+    }
+
+    function importFacilitatorsFromCSV(csvText) {
+        const lines = csvText.split(/\r?\n/).filter(l => l.trim());
+        let start = lines[0]?.toLowerCase().includes('nama') ? 1 : 0;
+        const newNames = [];
+        for (let i = start; i < lines.length; i++) {
+            let name = lines[i].trim().replace(/^"|"$/g, '');
+            if (name) newNames.push(name);
+        }
+        if (newNames.length) {
+            facilitators = newNames.map((name, idx) => ({ id: idx + 1, name: name }));
+            saveFacilitators();
+            // reset ulang payments? tidak perlu, tapi biar tidak error kita filter
+            for (let m in payments) {
+                payments[m] = payments[m].filter(p => facilitators.some(f => f.id === p.facilitatorId));
+                facilitators.forEach(f => { if (!payments[m].some(p => p.facilitatorId === f.id)) payments[m].push({ facilitatorId: f.id, status: false, amount: 0 }); });
+            }
             savePayments();
-            renderPaymentTable(monthKey);
-            alert('Perubahan berhasil disimpan!');
-            if (document.querySelector('.tab-btn.active')?.dataset.tab === 'recap') renderRecapTable();
+            if (document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(currentMonthKey);
+            alert(`Import ${newNames.length} fasilitator`);
+        } else alert("CSV tidak valid");
+    }
+
+    function importPaymentsFromCSV(csvText) {
+        const lines = csvText.split(/\r?\n/).filter(l => l.trim());
+        if (lines.length < 2) return;
+        let updated = 0;
+        for (let i = 1; i < lines.length; i++) {
+            let parts = lines[i].split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+            let bulan = parts[0];
+            let nama = parts[1];
+            let statusRaw = (parts[2] || '').toUpperCase();
+            let isLunas = statusRaw.includes('LUNAS') || statusRaw === '1';
+            let fas = facilitators.find(f => f.name.toLowerCase() === nama.toLowerCase());
+            if (fas && bulan) {
+                if (!payments[bulan]) payments[bulan] = facilitators.map(f => ({ facilitatorId: f.id, status: false, amount: 0 }));
+                let rec = payments[bulan].find(p => p.facilitatorId === fas.id);
+                if (rec) { rec.status = isLunas; rec.amount = isLunas ? DEFAULT_AMOUNT : 0; updated++; }
+            }
+        }
+        savePayments();
+        alert(`Impor selesai, ${updated} data diperbarui`);
+        if (document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(currentMonthKey);
+    }
+
+    function resetToDefault() {
+        if (confirm("Reset ke data default Magelang? Semua perubahan akan hilang.")) {
+            initDefaultFacilitators();
+            payments = {};
+            savePayments();
+            if (document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(document.getElementById('monthPicker').value);
         }
     }
-    
-    function selectAll(monthKey, select) {
-        const statusMap = getMonthStatusMap(monthKey);
-        if (!pendingChanges[monthKey]) pendingChanges[monthKey] = {};
-        facilitators.forEach(f => { pendingChanges[monthKey][f.id] = select; });
-        renderPaymentTable(monthKey);
-    }
-    
-    function renderRecapTable() {
-        const tbody = document.getElementById('recapTbody');
-        const allMonths = [...new Set([...Object.keys(payments), ...cashOuts.map(c => c.month).filter(m => m)])].sort();
-        if (allMonths.length === 0) { tbody.innerHTML = '<tr><td colspan="7">Belum ada data</td></tr>'; return; }
-        tbody.innerHTML = '';
-        for (const month of allMonths) {
-            const statusMap = payments[month] || {};
-            const totalFasilitator = facilitators.length;
-            let lunas = 0;
-            for (let id of Object.keys(statusMap)) if (statusMap[id]) lunas++;
-            const belum = totalFasilitator - lunas;
-            const pemasukan = lunas * DEFAULT_AMOUNT;
-            const pengeluaran = cashOuts.filter(c => c.month === month).reduce((sum, c) => sum + c.amount, 0);
-            const saldo = pemasukan - pengeluaran;
-            const row = tbody.insertRow();
-            row.insertCell(0).innerText = month;
-            row.insertCell(1).innerText = totalFasilitator;
-            row.insertCell(2).innerText = lunas;
-            row.insertCell(3).innerText = belum;
-            row.insertCell(4).innerHTML = `Rp${pemasukan.toLocaleString()}`;
-            row.insertCell(5).innerHTML = `Rp${pengeluaran.toLocaleString()}`;
-            row.insertCell(6).innerHTML = `<strong>Rp${saldo.toLocaleString()}</strong>`;
-        }
-    }
-    
-    function renderCashoutTable() {
-        const tbody = document.getElementById('cashoutTbody');
-        tbody.innerHTML = '';
-        cashOuts.sort((a,b) => b.date.localeCompare(a.date));
-        cashOuts.forEach((co, idx) => {
-            const row = tbody.insertRow();
-            row.insertCell(0).innerText = co.date;
-            row.insertCell(1).innerText = co.description;
-            row.insertCell(2).innerHTML = `Rp${co.amount.toLocaleString()}`;
-            row.insertCell(3).innerText = co.month || '-';
-            const actionCell = row.insertCell(4);
-            const delBtn = document.createElement('button');
-            delBtn.innerText = 'Hapus'; delBtn.className = 'small secondary'; delBtn.style.background = '#fee2e2'; delBtn.style.color = '#b91c1c';
-            delBtn.onclick = () => { if(confirm('Hapus pengeluaran ini?')) { cashOuts.splice(idx,1); saveCashOuts(); renderCashoutTable(); if(document.querySelector('.tab-btn.active')?.dataset.tab === 'recap') renderRecapTable(); } };
-            actionCell.appendChild(delBtn);
-        });
-    }
-    
-    function addCashout() {
-        const date = document.getElementById('cashoutDate').value;
-        const desc = document.getElementById('cashoutDesc').value.trim();
-        const amount = parseInt(document.getElementById('cashoutAmount').value);
-        const monthPicker = document.getElementById('monthPicker');
-        const selectedMonth = monthPicker ? monthPicker.value : new Date().toISOString().slice(0,7);
-        if (!date) { alert('Pilih tanggal'); return; }
-        if (!desc) { alert('Isi keterangan'); return; }
-        if (!amount || amount <= 0) { alert('Jumlah harus lebih dari 0'); return; }
-        cashOuts.push({ id: Date.now(), date: date, description: desc, amount: amount, month: selectedMonth });
-        saveCashOuts();
-        document.getElementById('cashoutDesc').value = '';
-        document.getElementById('cashoutAmount').value = '';
-        renderCashoutTable();
-        if (document.querySelector('.tab-btn.active')?.dataset.tab === 'recap') renderRecapTable();
-        alert('Pengeluaran berhasil ditambahkan');
-    }
-    
-    function exportRecapCSV() {
-        let rows = [["Bulan","Total Fasilitator","Lunas","Belum","Total Kas Masuk","Total Kas Keluar","Saldo"]];
-        const allMonths = [...new Set([...Object.keys(payments), ...cashOuts.map(c => c.month).filter(m => m)])].sort();
-        for (const month of allMonths) {
-            const statusMap = payments[month] || {};
-            let lunas = 0;
-            for (let id of Object.keys(statusMap)) if (statusMap[id]) lunas++;
-            const pemasukan = lunas * DEFAULT_AMOUNT;
-            const pengeluaran = cashOuts.filter(c => c.month === month).reduce((sum, c) => sum + c.amount, 0);
-            const saldo = pemasukan - pengeluaran;
-            rows.push([month, facilitators.length, lunas, facilitators.length - lunas, pemasukan, pengeluaran, saldo]);
-        }
-        const csv = rows.map(r => r.join(",")).join("\n");
-        downloadCSV(csv, "rekap_kas_fasilitator.csv");
-    }
-    
-    function exportPaymentMonthCSV(monthKey) {
-        const statusMap = getMonthStatusMap(monthKey);
-        let rows = [["No","Nama","Status","Nominal"]];
-        facilitators.forEach(f => {
-            const isPaid = statusMap[f.id] || false;
-            rows.push([f.id, `"${f.name}"`, isPaid ? "LUNAS" : "BELUM", isPaid ? DEFAULT_AMOUNT : 0]);
-        });
-        const csv = rows.map(r => r.join(",")).join("\n");
-        downloadCSV(csv, `iuran_${monthKey}.csv`);
-    }
-    
+
     function downloadCSV(content, filename) {
         const blob = new Blob(["\uFEFF" + content], { type: "text/csv;charset=utf-8" });
         const link = document.createElement("a");
@@ -652,40 +696,44 @@
         link.click();
         URL.revokeObjectURL(link.href);
     }
-    
-    // Initialize and event handlers
+
+    // Event Listeners
     document.addEventListener('DOMContentLoaded', () => {
-        initData();
-        loadPayments();
-        loadCashOuts();
+        loadData();
         
         const tabs = document.querySelectorAll('.tab-btn');
-        const contents = { payment: document.getElementById('paymentTab'), recap: document.getElementById('recapTab'), cashout: document.getElementById('cashoutTab') };
+        const contents = { payment: document.getElementById('paymentTab'), rekap: document.getElementById('rekapTab'), batch: document.getElementById('batchTab') };
         function switchTab(tabId) {
             Object.values(contents).forEach(c => c.style.display = 'none');
             contents[tabId].style.display = 'block';
             tabs.forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
             if (tabId === 'payment') renderPaymentTable(document.getElementById('monthPicker').value);
-            if (tabId === 'recap') renderRecapTable();
-            if (tabId === 'cashout') { renderCashoutTable(); document.getElementById('cashoutDate').value = new Date().toISOString().slice(0,10); }
+            if (tabId === 'rekap') renderRekap(document.getElementById('rekapMonthPicker').value);
         }
         tabs.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
         
-        const monthPicker = document.getElementById('monthPicker');
-        document.getElementById('loadPaymentBtn').addEventListener('click', () => renderPaymentTable(monthPicker.value));
-        monthPicker.addEventListener('change', () => renderPaymentTable(monthPicker.value));
-        document.getElementById('selectAllBtn').addEventListener('click', () => selectAll(monthPicker.value, true));
-        document.getElementById('unselectAllBtn').addEventListener('click', () => selectAll(monthPicker.value, false));
-        document.getElementById('saveChangesBtn').addEventListener('click', () => saveChangesWithConfirm(monthPicker.value));
-        document.getElementById('exportPaymentMonthBtn').addEventListener('click', () => exportPaymentMonthCSV(monthPicker.value));
-        document.getElementById('searchPayment').addEventListener('input', () => renderPaymentTable(monthPicker.value));
-        document.getElementById('refreshRecapBtn').addEventListener('click', () => renderRecapTable());
-        document.getElementById('exportRecapBtn').addEventListener('click', () => exportRecapCSV());
-        document.getElementById('addCashoutBtn').addEventListener('click', () => addCashout());
+        document.getElementById('loadPaymentBtn').addEventListener('click', () => renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('monthPicker').addEventListener('change', () => renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('selectAllBtn').addEventListener('click', () => selectAll(true));
+        document.getElementById('unselectAllBtn').addEventListener('click', () => selectAll(false));
+        document.getElementById('kasKeluarBtn').addEventListener('click', kasKeluar);
+        document.getElementById('confirmSaveBtn').addEventListener('click', () => { applyPendingChanges(); renderPaymentTable(currentMonthKey); });
+        document.getElementById('cancelChangesBtn').addEventListener('click', () => { discardPendingChanges(); renderPaymentTable(currentMonthKey); });
+        document.getElementById('headerCheckbox').addEventListener('change', (e) => selectAll(e.target.checked));
+        document.getElementById('searchPayment').addEventListener('input', () => renderPaymentTable(currentMonthKey));
         
-        renderPaymentTable(monthPicker.value);
-        renderCashoutTable();
+        document.getElementById('loadRekapBtn').addEventListener('click', () => renderRekap(document.getElementById('rekapMonthPicker').value));
+        document.getElementById('rekapMonthPicker').addEventListener('change', () => renderRekap(document.getElementById('rekapMonthPicker').value));
+        document.getElementById('exportRekapBtn').addEventListener('click', () => exportRekapCSV(document.getElementById('rekapMonthPicker').value));
+        
+        document.getElementById('exportAllPaymentsBtn').addEventListener('click', exportAllPayments);
+        document.getElementById('exportAllFacilitatorsBtn').addEventListener('click', exportFacilitatorsCSV);
+        document.getElementById('importAllPaymentsFile').addEventListener('change', e => { if(e.target.files[0]){ let reader = new FileReader(); reader.onload = ev => { importPaymentsFromCSV(ev.target.result); e.target.value = ''; }; reader.readAsText(e.target.files[0], 'UTF-8'); } });
+        document.getElementById('importFacilitatorFile').addEventListener('change', e => { if(e.target.files[0]){ let reader = new FileReader(); reader.onload = ev => { importFacilitatorsFromCSV(ev.target.result); e.target.value = ''; }; reader.readAsText(e.target.files[0], 'UTF-8'); } });
+        document.getElementById('resetDefaultDataBtn').addEventListener('click', resetToDefault);
+        
+        renderPaymentTable('2026-01');
         switchTab('payment');
     });
 </script>

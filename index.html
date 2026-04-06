@@ -1,1 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kas Fasilitator Magelang</title>
 
+<style>
+body {
+    font-family: system-ui;
+    background:#f1f5f9;
+    padding:20px;
+}
+.card {
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:20px;
+}
+button {
+    padding:8px 14px;
+    border:none;
+    border-radius:20px;
+    background:#1e6f5c;
+    color:white;
+    cursor:pointer;
+}
+.secondary { background:#94a3b8; }
+table {
+    width:100%;
+    border-collapse:collapse;
+}
+td, th {
+    padding:8px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+.sudah {
+    background:#3b82f6;
+    color:white;
+    padding:4px 10px;
+    border-radius:10px;
+}
+.belum {
+    background:#ef4444;
+    color:white;
+    padding:4px 10px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>📋 Kas Fasilitator</h2>
+    <input type="month" id="bulan">
+    <button onclick="loadData()">Load</button>
+    <button onclick="saveData()">Simpan</button>
+</div>
+
+<div class="card">
+    <h3>💰 Input Iuran</h3>
+    <table id="tabel"></table>
+</div>
+
+<div class="card">
+    <h3>📅 Rekap Tahunan</h3>
+    <input type="number" id="tahun" value="2026">
+    <button onclick="rekap()">Tampilkan</button>
+    <button onclick="exportCSV()">Export CSV</button>
+    <table id="rekap"></table>
+    <div id="summary"></div>
+</div>
+
+<script>
+const nama = [
+"Chandra Tribawono","Fasilitator 2","Fasilitator 3"
+];
+
+let data = JSON.parse(localStorage.getItem("kas")||"{}");
+let kasKeluar = JSON.parse(localStorage.getItem("keluar")||"[]");
+
+function loadData(){
+    let bulan = document.getElementById("bulan").value;
+    let tbl = document.getElementById("tabel");
+    tbl.innerHTML="<tr><th>Nama</th><th>Status</th></tr>";
+
+    nama.forEach(n=>{
+        let key = bulan+"-"+n;
+        let status = data[key];
+
+        tbl.innerHTML += `
+        <tr>
+            <td>${n}</td>
+            <td>
+                <input type="checkbox" ${status?"checked":""}
+                onchange="data['${key}']=this.checked">
+            </td>
+        </tr>`;
+    });
+}
+
+function saveData(){
+    localStorage.setItem("kas",JSON.stringify(data));
+    alert("Tersimpan");
+}
+
+function rekap(){
+    let tahun = document.getElementById("tahun").value;
+    let tbl = document.getElementById("rekap");
+
+    let bulan = ["01","02","03","04","05","06","07","08","09","10","11","12"];
+
+    tbl.innerHTML="<tr><th>Nama</th>"+bulan.map(b=>"<th>"+b+"</th>").join("")+"</tr>";
+
+    let totalMasuk=0;
+
+    nama.forEach(n=>{
+        let row="<tr><td>"+n+"</td>";
+
+        bulan.forEach(b=>{
+            let key=tahun+"-"+b+"-"+n;
+            let s=data[key];
+
+            if(s) totalMasuk+=10000;
+
+            row+=`<td><span class="${s?'sudah':'belum'}">${s?'SUDAH':'BELUM'}</span></td>`;
+        });
+
+        row+="</tr>";
+        tbl.innerHTML+=row;
+    });
+
+    let keluar = kasKeluar
+        .filter(k=>k.tanggal.startsWith(tahun))
+        .reduce((a,b)=>a+b.nominal,0);
+
+    document.getElementById("summary").innerHTML=`
+    💰 Masuk: Rp${totalMasuk.toLocaleString()}<br>
+    💸 Keluar: Rp${keluar.toLocaleString()}<br>
+    🧮 Saldo: Rp${(totalMasuk-keluar).toLocaleString()}
+    `;
+}
+
+function exportCSV(){
+    let csv="Nama,Jan,Feb,Mar,Apr,Mei,Jun,Jul,Ags,Sep,Okt,Nov,Des\n";
+    let tahun=document.getElementById("tahun").value;
+
+    nama.forEach(n=>{
+        let row=[n];
+        for(let i=1;i<=12;i++){
+            let b=i.toString().padStart(2,"0");
+            let key=tahun+"-"+b+"-"+n;
+            row.push(data[key]?"SUDAH":"BELUM");
+        }
+        csv+=row.join(",")+"\n";
+    });
+
+    let blob=new Blob([csv]);
+    let a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="rekap.csv";
+    a.click();
+}
+</script>
+
+</body>
+</html>

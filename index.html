@@ -15,7 +15,6 @@
             justify-content: center;
             align-items: center;
         }
-        /* Login */
         .login-container {
             background: white;
             border-radius: 32px;
@@ -26,60 +25,17 @@
             text-align: center;
         }
         .login-container h2 { color: #1e6f5c; margin-bottom: 1.5rem; }
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-        }
-        .password-wrapper input {
-            width: 100%;
-            padding: 12px 16px;
-            padding-right: 50px;
-            border-radius: 60px;
-            border: 1px solid #cbd5e1;
-            font-size: 1rem;
-        }
-        .toggle-pwd {
-            position: absolute;
-            right: 12px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: #1e6f5c;
-        }
-        button.primary {
-            background: #1e6f5c;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 60px;
-            width: 100%;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        .password-wrapper { position: relative; display: flex; align-items: center; margin: 10px 0; }
+        .password-wrapper input { width: 100%; padding: 12px 16px; padding-right: 50px; border-radius: 60px; border: 1px solid #cbd5e1; }
+        .toggle-pwd { position: absolute; right: 12px; background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #1e6f5c; }
+        button.primary { background: #1e6f5c; color: white; border: none; padding: 12px; border-radius: 60px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .error-msg { color: #dc2626; font-size: 0.85rem; margin-top: 10px; }
-        /* Aplikasi utama */
         .app-content { display: none; width: 100%; max-width: 1400px; margin: 0 auto; }
-        .header, .card, .total-card {
-            background: white;
-            border-radius: 24px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
+        .header, .card, .total-card { background: white; border-radius: 24px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .card-title { font-size: 1.3rem; font-weight: 600; border-left: 5px solid #1e6f5c; padding-left: 16px; margin-bottom: 1rem; }
         .flex-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 20px; }
         .filter-group { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-        input, select, button {
-            padding: 8px 14px;
-            border-radius: 40px;
-            border: 1px solid #cbd5e1;
-            background: white;
-            font-size: 0.9rem;
-        }
+        input, select, button { padding: 8px 14px; border-radius: 40px; border: 1px solid #cbd5e1; background: white; font-size: 0.9rem; }
         button.secondary { background: #e2e8f0; color: #1e293b; cursor: pointer; }
         button.warning { background: #f59e0b; color: white; border: none; cursor: pointer; }
         .scrollable-table { overflow-x: auto; max-height: 550px; overflow-y: auto; border-radius: 16px; border: 1px solid #eef2f6; }
@@ -96,10 +52,7 @@
         .info-text { font-size: 0.8rem; background: #f1f5f9; padding: 10px; border-radius: 16px; margin-top: 16px; }
         .sync-status { font-size: 0.8rem; color: #1e6f5c; margin-top: 8px; }
         .tabs { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-        .tab-btn {
-            background: white; border: none; padding: 10px 24px; font-size: 1rem; font-weight: 600;
-            border-radius: 40px; cursor: pointer; transition: 0.2s; color: #2d3e50;
-        }
+        .tab-btn { background: white; border: none; padding: 10px 24px; font-size: 1rem; font-weight: 600; border-radius: 40px; cursor: pointer; transition: 0.2s; color: #2d3e50; }
         .tab-btn.active { background: #1e6f5c; color: white; }
         .total-card { background: linear-gradient(135deg, #1e6f5c, #0f4c3f); color: white; display: flex; flex-wrap: wrap; justify-content: space-between; }
         .total-item { text-align: center; padding: 8px 16px; }
@@ -110,7 +63,6 @@
     </style>
 </head>
 <body>
-<!-- LAYAR LOGIN -->
 <div id="loginContainer" class="login-container">
     <h2>🔐 Akses Kas Fasilitator</h2>
     <div class="password-wrapper">
@@ -121,7 +73,6 @@
     <div id="loginError" class="error-msg"></div>
 </div>
 
-<!-- KONTEN UTAMA APLIKASI -->
 <div id="appContent" class="app-content">
     <div class="header" style="display:flex; justify-content:space-between; align-items:center;">
         <div><h1>📋 Kas Fasilitator Magelang</h1><div class="sub">Iuran Rp10.000/orang/bulan • Total: <span id="totalFasilitatorCount">0</span></div></div>
@@ -222,7 +173,7 @@
         </div>
     </div>
 
-    <!-- TAB INTEGRASI SPREADSHEET -->
+    <!-- TAB INTEGRASI SPREADSHEET (dipastikan ada tombol) -->
     <div id="backupTab" class="tab-content" style="display:none;">
         <div class="card">
             <div class="card-title">☁️ Integrasi Google Spreadsheet (Backup Otomatis)</div>
@@ -233,7 +184,7 @@
                 3. Deploy sebagai <strong>Web App</strong> (Execute as: Me, Access: Anyone).<br>
                 4. Salin URL Web App, tempelkan di bawah, klik <strong>Simpan & Uji</strong>.
             </div>
-            <button id="copyScriptCodeBtn" class="primary">📋 Salin Kode Apps Script</button>
+            <button id="copyScriptCodeBtn" class="primary" style="width:auto; margin-bottom:16px;">📋 Salin Kode Apps Script</button>
             <hr>
             <div class="form-group">
                 <label>URL Web App (Endpoint)</label>
@@ -330,13 +281,12 @@
     const STORAGE = { FAC: 'kas_fac_lokasi', PAY: 'kas_pay_lokasi', KAS: 'kas_keluar_lokasi', URL: 'kas_spreadsheet_url' };
     let webAppUrl = "";
 
-    // Helper
     function saveAll() {
         localStorage.setItem(STORAGE.FAC, JSON.stringify(facilitators));
         localStorage.setItem(STORAGE.PAY, JSON.stringify(payments));
         localStorage.setItem(STORAGE.KAS, JSON.stringify(kasKeluar));
         document.getElementById('totalFasilitatorCount').innerText = facilitators.length;
-        backupToSpreadsheet(); // auto backup setiap ada perubahan
+        backupToSpreadsheet();
     }
 
     function loadAll() {
@@ -350,7 +300,6 @@
         document.getElementById('totalFasilitatorCount').innerText = facilitators.length;
     }
 
-    // Backup ke spreadsheet
     async function backupToSpreadsheet() {
         webAppUrl = localStorage.getItem(STORAGE.URL) || "";
         if (!webAppUrl) return;
@@ -384,51 +333,38 @@
         } catch(e) {}
     }
 
-    // ========== FITUR APLIKASI ==========
-    function getUniqueLokasi() {
-        let set = new Set(facilitators.map(f => f.lokasi).filter(l => l && l.trim() !== ""));
-        return Array.from(set).sort();
-    }
-
+    // Fungsi pendukung aplikasi (filter, render, dll) - disederhanakan tapi lengkap
+    function getUniqueLokasi() { return [...new Set(facilitators.map(f => f.lokasi).filter(l=>l))].sort(); }
     function populateLokasiDropdowns() {
         let lokasiList = getUniqueLokasi();
-        let select1 = document.getElementById('filterLokasiInput');
-        let select2 = document.getElementById('filterLokasiRekap');
-        [select1, select2].forEach(sel => {
-            if (!sel) return;
-            let current = sel.value;
+        [document.getElementById('filterLokasiInput'), document.getElementById('filterLokasiRekap')].forEach(sel => {
+            if(!sel) return;
+            let cur = sel.value;
             sel.innerHTML = '<option value="">SEMUA LOKASI</option>';
-            lokasiList.forEach(l => { let opt = document.createElement('option'); opt.value = l; opt.textContent = l; sel.appendChild(opt); });
-            if (current && lokasiList.includes(current)) sel.value = current;
-            else sel.value = "";
+            lokasiList.forEach(l => { let opt = document.createElement('option'); opt.value=l; opt.textContent=l; sel.appendChild(opt); });
+            if(cur && lokasiList.includes(cur)) sel.value = cur; else sel.value = "";
         });
     }
-
-    function filterFacilitators(searchText, lokasiFilter) {
-        return facilitators.filter(f => {
-            let matchLokasi = !lokasiFilter || f.lokasi === lokasiFilter;
-            let matchText = !searchText || f.name.toLowerCase().includes(searchText.toLowerCase()) || f.lokasi.toLowerCase().includes(searchText.toLowerCase());
-            return matchLokasi && matchText;
-        });
+    function filterFacilitators(search, lokasi) {
+        return facilitators.filter(f => (!lokasi || f.lokasi===lokasi) && (!search || f.name.toLowerCase().includes(search.toLowerCase()) || f.lokasi.toLowerCase().includes(search.toLowerCase())));
     }
 
     let pendingChanges = null, currentMonth = "";
-    function addPending(fId, newStatus) {
-        if (!pendingChanges) pendingChanges = { month: currentMonth, updates: [] };
-        let exist = pendingChanges.updates.find(u => u.id === fId);
-        if (exist) exist.status = newStatus;
-        else pendingChanges.updates.push({ id: fId, status: newStatus });
+    function addPending(id, status) {
+        if(!pendingChanges) pendingChanges = { month: currentMonth, updates: [] };
+        let exist = pendingChanges.updates.find(u=>u.id===id);
+        if(exist) exist.status = status;
+        else pendingChanges.updates.push({ id, status });
         document.getElementById('confirmBar').style.display = 'flex';
         renderPaymentTable(currentMonth);
     }
     function applyPending() {
-        if (pendingChanges && pendingChanges.month) {
-            let monthData = payments[pendingChanges.month];
-            if (!monthData) monthData = facilitators.map(f => ({ facilitatorId: f.id, status: false }));
-            for (let upd of pendingChanges.updates) {
-                let rec = monthData.find(r => r.facilitatorId === upd.id);
-                if (rec) rec.status = upd.status;
-                else monthData.push({ facilitatorId: upd.id, status: upd.status });
+        if(pendingChanges && pendingChanges.month) {
+            let monthData = payments[pendingChanges.month] || facilitators.map(f=>({facilitatorId:f.id, status:false}));
+            for(let upd of pendingChanges.updates) {
+                let rec = monthData.find(r=>r.facilitatorId===upd.id);
+                if(rec) rec.status = upd.status;
+                else monthData.push({facilitatorId:upd.id, status:upd.status});
             }
             payments[pendingChanges.month] = monthData;
             saveAll();
@@ -438,231 +374,143 @@
         renderPaymentTable(currentMonth);
     }
     function cancelPending() { pendingChanges = null; document.getElementById('confirmBar').style.display = 'none'; renderPaymentTable(currentMonth); }
-
     function renderPaymentTable(month) {
         currentMonth = month;
-        let monthData = payments[month] || facilitators.map(f => ({ facilitatorId: f.id, status: false }));
-        let statusMap = new Map(monthData.map(p => [p.facilitatorId, p.status]));
-        if (pendingChanges && pendingChanges.month === month) {
-            for (let up of pendingChanges.updates) statusMap.set(up.id, up.status);
-        }
-        let searchText = document.getElementById('searchInput')?.value || '';
-        let lokasiFilter = document.getElementById('filterLokasiInput')?.value || '';
-        let filtered = filterFacilitators(searchText, lokasiFilter);
+        let monthData = payments[month] || facilitators.map(f=>({facilitatorId:f.id, status:false}));
+        let statusMap = new Map(monthData.map(p=>[p.facilitatorId,p.status]));
+        if(pendingChanges && pendingChanges.month===month) for(let up of pendingChanges.updates) statusMap.set(up.id, up.status);
+        let search = document.getElementById('searchInput')?.value||'', lokasi = document.getElementById('filterLokasiInput')?.value||'';
+        let filtered = filterFacilitators(search, lokasi);
         let tbody = document.getElementById('paymentTbody');
         tbody.innerHTML = '';
-        filtered.forEach((f, idx) => {
-            let isPaid = statusMap.get(f.id) || false;
+        filtered.forEach((f,idx) => {
+            let isPaid = statusMap.get(f.id)||false;
             let row = tbody.insertRow();
             let chkCell = row.insertCell(0);
-            let chk = document.createElement('input'); chk.type = 'checkbox'; chk.checked = isPaid;
-            chk.onchange = (e) => addPending(f.id, e.target.checked);
+            let chk = document.createElement('input'); chk.type='checkbox'; chk.checked=isPaid;
+            chk.onchange = (e)=>addPending(f.id, e.target.checked);
             chkCell.appendChild(chk);
-            row.insertCell(1).innerText = facilitators.findIndex(orig => orig.id === f.id) + 1;
+            row.insertCell(1).innerText = facilitators.findIndex(orig=>orig.id===f.id)+1;
             row.insertCell(2).innerText = f.name;
-            row.insertCell(3).innerText = f.lokasi || '-';
+            row.insertCell(3).innerText = f.lokasi||'-';
             let statusCell = row.insertCell(4);
-            let span = document.createElement('span'); span.innerText = isPaid ? 'LUNAS' : 'BELUM';
-            span.className = `status-badge ${isPaid ? 'lunas' : 'belum'}`;
+            let span = document.createElement('span'); span.innerText = isPaid?'LUNAS':'BELUM';
+            span.className = `status-badge ${isPaid?'lunas':'belum'}`;
             statusCell.appendChild(span);
-            row.insertCell(5).innerText = isPaid ? `Rp${DEFAULT_AMOUNT.toLocaleString()}` : 'Rp0';
+            row.insertCell(5).innerText = isPaid?`Rp${DEFAULT_AMOUNT.toLocaleString()}`:'Rp0';
         });
         let headerChk = document.getElementById('headerCheckbox');
-        if (headerChk) {
-            let allCb = document.querySelectorAll('#paymentTbody input[type="checkbox"]');
-            headerChk.checked = allCb.length > 0 && Array.from(allCb).every(c => c.checked);
+        if(headerChk) {
+            let allCb = document.querySelectorAll('#paymentTbody input');
+            headerChk.checked = allCb.length>0 && Array.from(allCb).every(c=>c.checked);
         }
     }
-
     function selectAll(checked) {
-        let searchText = document.getElementById('searchInput')?.value || '';
-        let lokasiFilter = document.getElementById('filterLokasiInput')?.value || '';
-        let filtered = filterFacilitators(searchText, lokasiFilter);
-        let updates = filtered.map(f => ({ id: f.id, status: checked }));
-        pendingChanges = { month: currentMonth, updates };
+        let search = document.getElementById('searchInput')?.value||'', lokasi = document.getElementById('filterLokasiInput')?.value||'';
+        let filtered = filterFacilitators(search, lokasi);
+        pendingChanges = { month: currentMonth, updates: filtered.map(f=>({id:f.id, status:checked})) };
         document.getElementById('confirmBar').style.display = 'flex';
         renderPaymentTable(currentMonth);
     }
-
-    // REKAP TAHUNAN
     function renderRekapTahunan(tahun) {
-        let months = [];
-        for (let i = 1; i <= 12; i++) months.push(`${tahun}-${String(i).padStart(2,'0')}`);
-        let searchText = document.getElementById('searchRekap')?.value || '';
-        let lokasiFilter = document.getElementById('filterLokasiRekap')?.value || '';
-        let filtered = filterFacilitators(searchText, lokasiFilter);
+        let months = []; for(let i=1;i<=12;i++) months.push(`${tahun}-${String(i).padStart(2,'0')}`);
+        let search = document.getElementById('searchRekap')?.value||'', lokasi = document.getElementById('filterLokasiRekap')?.value||'';
+        let filtered = filterFacilitators(search, lokasi);
         let thead = document.getElementById('rekapTahunHeader');
-        thead.innerHTML = '<tr><th>No</th><th>Nama</th><th>Lokasi Tugas</th>' + months.map(m => `<th>${m.slice(5)}</th>`).join('') + '</tr>';
+        thead.innerHTML = '<tr><th>No</th><th>Nama</th><th>Lokasi</th>'+months.map(m=>`<th>${m.slice(5)}</th>`).join('')+'</tr>';
         let tbody = document.getElementById('rekapTahunanTbody');
         tbody.innerHTML = '';
-        let totalIuranTahun = 0;
-        filtered.forEach((f, idx) => {
+        let totalIuran=0;
+        filtered.forEach((f,idx) => {
             let row = tbody.insertRow();
             row.insertCell(0).innerText = idx+1;
             row.insertCell(1).innerText = f.name;
-            row.insertCell(2).innerText = f.lokasi || '-';
-            for (let m of months) {
-                let monthData = payments[m] || [];
-                let status = monthData.find(p => p.facilitatorId === f.id)?.status || false;
-                if (status) totalIuranTahun += DEFAULT_AMOUNT;
+            row.insertCell(2).innerText = f.lokasi||'-';
+            for(let m of months) {
+                let status = (payments[m]||[]).find(p=>p.facilitatorId===f.id)?.status||false;
+                if(status) totalIuran += DEFAULT_AMOUNT;
                 let cell = row.insertCell();
                 let div = document.createElement('div');
-                div.className = `status-cell ${status ? 'lunas-biru' : 'belum-merah'}`;
-                div.innerText = status ? 'SUDAH' : 'BELUM';
+                div.className = `status-cell ${status?'lunas-biru':'belum-merah'}`;
+                div.innerText = status?'SUDAH':'BELUM';
                 cell.appendChild(div);
             }
         });
-        let totalKasKeluarTahun = kasKeluar.filter(k => k.bulan && k.bulan.startsWith(tahun)).reduce((s, k) => s + k.nominal, 0);
-        let totalAllTime = 0;
-        for (let m in payments) totalAllTime += payments[m].filter(p => p.status).length * DEFAULT_AMOUNT;
-        let totalAllKas = kasKeluar.reduce((s,k) => s + k.nominal, 0);
-        document.getElementById('totalIuranTahun').innerHTML = `Rp${totalIuranTahun.toLocaleString()}`;
-        document.getElementById('totalKasKeluarTahun').innerHTML = `Rp${totalKasKeluarTahun.toLocaleString()}`;
-        document.getElementById('sisaAnggaranTahun').innerHTML = `Rp${(totalIuranTahun - totalKasKeluarTahun).toLocaleString()}`;
-        document.getElementById('totalAllTime').innerHTML = `Rp${(totalAllTime - totalAllKas).toLocaleString()}`;
-        let kasInfo = kasKeluar.filter(k => k.bulan && k.bulan.startsWith(tahun));
-        let infoDiv = document.getElementById('rekapKasKeluarInfo');
-        if (kasInfo.length) infoDiv.innerHTML = `<strong>💸 Kas Keluar Tahun ${tahun}:</strong> ${kasInfo.map(k => `${k.tanggal} Rp${k.nominal.toLocaleString()} (${k.keterangan})`).join(' | ')}`;
-        else infoDiv.innerHTML = `<strong>💸 Kas Keluar Tahun ${tahun}:</strong> Tidak ada catatan.`;
+        let totalKas = kasKeluar.filter(k=>k.bulan?.startsWith(tahun)).reduce((s,k)=>s+k.nominal,0);
+        let allTime = 0; for(let m in payments) allTime += payments[m].filter(p=>p.status).length*DEFAULT_AMOUNT;
+        let allKas = kasKeluar.reduce((s,k)=>s+k.nominal,0);
+        document.getElementById('totalIuranTahun').innerHTML = `Rp${totalIuran.toLocaleString()}`;
+        document.getElementById('totalKasKeluarTahun').innerHTML = `Rp${totalKas.toLocaleString()}`;
+        document.getElementById('sisaAnggaranTahun').innerHTML = `Rp${(totalIuran-totalKas).toLocaleString()}`;
+        document.getElementById('totalAllTime').innerHTML = `Rp${(allTime-allKas).toLocaleString()}`;
+        let info = kasKeluar.filter(k=>k.bulan?.startsWith(tahun));
+        document.getElementById('rekapKasKeluarInfo').innerHTML = info.length?`<strong>💸 Kas Keluar Tahun ${tahun}:</strong> ${info.map(k=>`${k.tanggal} Rp${k.nominal.toLocaleString()} (${k.keterangan})`).join(' | ')}`:`<strong>💸 Kas Keluar Tahun ${tahun}:</strong> Tidak ada catatan.`;
     }
-
     function exportRekapTahunanCSV(tahun) {
-        let months = [];
-        for (let i = 1; i <= 12; i++) months.push(`${tahun}-${String(i).padStart(2,'0')}`);
-        let searchText = document.getElementById('searchRekap')?.value || '';
-        let lokasiFilter = document.getElementById('filterLokasiRekap')?.value || '';
-        let filtered = filterFacilitators(searchText, lokasiFilter);
-        let rows = [["No", "Nama", "Lokasi", ...months.map(m => m.slice(5))]];
-        filtered.forEach((f, idx) => {
+        let months = []; for(let i=1;i<=12;i++) months.push(`${tahun}-${String(i).padStart(2,'0')}`);
+        let search = document.getElementById('searchRekap')?.value||'', lokasi = document.getElementById('filterLokasiRekap')?.value||'';
+        let filtered = filterFacilitators(search, lokasi);
+        let rows = [["No","Nama","Lokasi",...months.map(m=>m.slice(5))]];
+        filtered.forEach((f,idx) => {
             let row = [idx+1, f.name, f.lokasi];
-            for (let m of months) {
-                let status = (payments[m] || []).find(p => p.facilitatorId === f.id)?.status || false;
-                row.push(status ? "SUDAH" : "BELUM");
-            }
+            for(let m of months) row.push((payments[m]||[]).find(p=>p.facilitatorId===f.id)?.status?"SUDAH":"BELUM");
             rows.push(row);
         });
-        downloadCSV(rows.map(r => r.join(",")).join("\n"), `rekap_tahunan_${tahun}_filter.csv`);
+        downloadCSV(rows.map(r=>r.join(",")).join("\n"), `rekap_tahunan_${tahun}_filter.csv`);
     }
-
-    // KAS KELUAR
     function renderKasKeluar() {
         let tbody = document.getElementById('kasKeluarTbody');
         tbody.innerHTML = '';
-        kasKeluar.slice().reverse().forEach((k, idx) => {
+        kasKeluar.slice().reverse().forEach((k,idx) => {
             let row = tbody.insertRow();
             row.insertCell(0).innerText = k.tanggal;
             row.insertCell(1).innerText = k.bulan;
             row.insertCell(2).innerText = `Rp${k.nominal.toLocaleString()}`;
             row.insertCell(3).innerText = k.keterangan;
             let delCell = row.insertCell(4);
-            let delBtn = document.createElement('button'); delBtn.innerText = 'Hapus'; delBtn.className = 'secondary'; delBtn.style.padding = '4px 8px';
-            delBtn.onclick = () => { if(confirm('Hapus kas keluar?')) { kasKeluar.splice(kasKeluar.length-1-idx,1); saveAll(); renderKasKeluar(); } };
+            let delBtn = document.createElement('button'); delBtn.innerText='Hapus'; delBtn.className='secondary'; delBtn.style.padding='4px 8px';
+            delBtn.onclick = () => { if(confirm('Hapus?')) { kasKeluar.splice(kasKeluar.length-1-idx,1); saveAll(); renderKasKeluar(); } };
             delCell.appendChild(delBtn);
         });
     }
-
     function tambahKasKeluar() {
         let tanggal = document.getElementById('kasTanggal').value;
         let nominal = parseInt(document.getElementById('kasNominal').value);
         let keterangan = document.getElementById('kasKeterangan').value.trim();
-        if (!tanggal) { alert("Pilih tanggal"); return; }
-        if (isNaN(nominal) || nominal <= 0) { alert("Nominal > 0"); return; }
-        if (!keterangan) keterangan = "-";
+        if(!tanggal) { alert("Pilih tanggal"); return; }
+        if(isNaN(nominal) || nominal<=0) { alert("Nominal >0"); return; }
+        if(!keterangan) keterangan="-";
         let bulan = tanggal.slice(0,7);
         kasKeluar.push({ tanggal, bulan, nominal, keterangan });
         saveAll();
         renderKasKeluar();
-        document.getElementById('kasNominal').value = '';
-        document.getElementById('kasKeterangan').value = '';
+        document.getElementById('kasNominal').value='';
+        document.getElementById('kasKeterangan').value='';
     }
-
-    function exportKasKeluarCSV() { let rows = [["Tanggal","Bulan","Nominal","Keterangan"]]; kasKeluar.forEach(k => rows.push([k.tanggal, k.bulan, k.nominal, k.keterangan])); downloadCSV(rows.map(r=>r.join(",")).join("\n"), "kas_keluar.csv"); }
-
-    // IMPORT EXPORT
-    function exportAllPayments() {
-        let rows = [["bulan","nama_fasilitator","status"]];
-        for (let bulan in payments) {
-            payments[bulan].forEach(p => {
-                let f = facilitators.find(fx => fx.id === p.facilitatorId);
-                if (f) rows.push([bulan, f.name, p.status ? "LUNAS" : "BELUM"]);
-            });
-        }
-        downloadCSV(rows.map(r=>r.join(",")).join("\n"), "semua_iuran.csv");
-    }
-    function exportFacilitators() { let rows = [["nama","lokasi"]]; facilitators.forEach(f => rows.push([f.name, f.lokasi])); downloadCSV(rows.map(r=>r.join(",")).join("\n"), "fasilitator_lokasi.csv"); }
+    function exportKasKeluarCSV() { let rows=[["Tanggal","Bulan","Nominal","Keterangan"]]; kasKeluar.forEach(k=>rows.push([k.tanggal,k.bulan,k.nominal,k.keterangan])); downloadCSV(rows.map(r=>r.join(",")).join("\n"),"kas_keluar.csv"); }
+    function exportAllPayments() { let rows=[["bulan","nama_fasilitator","status"]]; for(let bulan in payments) payments[bulan].forEach(p=>{ let f=facilitators.find(fx=>fx.id===p.facilitatorId); if(f) rows.push([bulan, f.name, p.status?"LUNAS":"BELUM"]); }); downloadCSV(rows.map(r=>r.join(",")).join("\n"),"semua_iuran.csv"); }
+    function exportFacilitators() { let rows=[["nama","lokasi"]]; facilitators.forEach(f=>rows.push([f.name,f.lokasi])); downloadCSV(rows.map(r=>r.join(",")).join("\n"),"fasilitator_lokasi.csv"); }
     function importFacilitators(csv) {
-        let lines = csv.split(/\r?\n/).filter(l=>l.trim());
-        let start = lines[0]?.toLowerCase().includes('nama') ? 1 : 0;
-        let newList = [];
-        for (let i=start; i<lines.length; i++) {
-            let parts = lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,''));
-            let name = parts[0]; let lokasi = parts[1] || '';
-            if (name) newList.push({ name, lokasi });
-        }
-        if (newList.length) {
-            facilitators = newList.map((d,idx) => ({ id: idx+1, name: d.name, lokasi: d.lokasi }));
-            payments = {};
-            saveAll();
-            populateLokasiDropdowns();
-            alert(`Import ${newList.length} fasilitator`);
-            if (document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(currentMonth);
-        }
+        let lines=csv.split(/\r?\n/).filter(l=>l.trim());
+        let start=lines[0]?.toLowerCase().includes('nama')?1:0;
+        let newList=[];
+        for(let i=start;i<lines.length;i++){ let parts=lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,'')); let name=parts[0], lokasi=parts[1]||''; if(name) newList.push({name,lokasi}); }
+        if(newList.length){ facilitators=newList.map((d,idx)=>({id:idx+1,name:d.name,lokasi:d.lokasi})); payments={}; saveAll(); populateLokasiDropdowns(); alert(`Import ${newList.length} fasilitator`); if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(currentMonth); }
     }
     function importPayments(csv) {
-        let lines = csv.split(/\r?\n/).filter(l=>l.trim());
-        for(let i=1;i<lines.length;i++) {
-            let parts = lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,''));
-            let bulan = parts[0], nama = parts[1], statusRaw = (parts[2]||'').toUpperCase();
-            let isLunas = statusRaw.includes('LUNAS') || statusRaw === '1';
-            let f = facilitators.find(fx => fx.name.toLowerCase() === nama.toLowerCase());
-            if(f && bulan) {
-                if(!payments[bulan]) payments[bulan] = facilitators.map(fx => ({ facilitatorId: fx.id, status: false }));
-                let rec = payments[bulan].find(p => p.facilitatorId === f.id);
-                if(rec) rec.status = isLunas;
-                else payments[bulan].push({ facilitatorId: f.id, status: isLunas });
-            }
-        }
-        saveAll();
-        alert("Import iuran selesai");
-        if(document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(currentMonth);
+        let lines=csv.split(/\r?\n/).filter(l=>l.trim());
+        for(let i=1;i<lines.length;i++){ let parts=lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,'')); let bulan=parts[0], nama=parts[1], statusRaw=(parts[2]||'').toUpperCase(); let isLunas=statusRaw.includes('LUNAS')||statusRaw==='1'; let f=facilitators.find(fx=>fx.name.toLowerCase()===nama.toLowerCase()); if(f&&bulan){ if(!payments[bulan]) payments[bulan]=facilitators.map(fx=>({facilitatorId:fx.id,status:false})); let rec=payments[bulan].find(p=>p.facilitatorId===f.id); if(rec) rec.status=isLunas; else payments[bulan].push({facilitatorId:f.id,status:isLunas}); } }
+        saveAll(); alert("Import iuran selesai"); if(document.querySelector('.tab-btn.active')?.dataset.tab==='payment') renderPaymentTable(currentMonth);
     }
-    function resetDefault() {
-        if(confirm("Reset ke data default Magelang?")) {
-            facilitators = DEFAULT_DATA.map((d,idx) => ({ id: idx+1, name: d.name, lokasi: d.lokasi }));
-            payments = {};
-            kasKeluar = [];
-            saveAll();
-            populateLokasiDropdowns();
-            renderPaymentTable(currentMonth);
-            alert("Reset berhasil");
-        }
-    }
-    function downloadCSV(content, filename) {
-        let blob = new Blob(["\uFEFF"+content], {type:"text/csv"});
-        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click(); URL.revokeObjectURL(a.href);
-    }
-
-    // SPREADSHEET INTEGRATION
+    function resetDefault() { if(confirm("Reset ke data default?")){ facilitators=DEFAULT_DATA.map((d,idx)=>({id:idx+1,name:d.name,lokasi:d.lokasi})); payments={}; kasKeluar=[]; saveAll(); populateLokasiDropdowns(); renderPaymentTable(currentMonth); alert("Reset berhasil"); } }
+    function downloadCSV(content,filename) { let blob=new Blob(["\uFEFF"+content],{type:"text/csv"}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href); }
     function saveWebAppUrl() {
         let url = document.getElementById('webAppUrl').value.trim();
-        if (url) {
-            webAppUrl = url;
-            localStorage.setItem(STORAGE.URL, url);
-            document.getElementById('syncStatus').innerHTML = '🔌 Menguji koneksi...';
-            backupToSpreadsheet().then(() => {
-                document.getElementById('syncStatus').innerHTML = '✅ URL tersimpan dan koneksi berhasil.';
-            }).catch(() => {
-                document.getElementById('syncStatus').innerHTML = '⚠️ URL tersimpan tapi gagal koneksi.';
-            });
-        } else {
-            localStorage.removeItem(STORAGE.URL);
-            webAppUrl = '';
-            document.getElementById('syncStatus').innerHTML = 'URL dihapus, backup nonaktif.';
-        }
+        if(url){ webAppUrl=url; localStorage.setItem(STORAGE.URL,url); document.getElementById('syncStatus').innerHTML='🔌 Menguji koneksi...'; backupToSpreadsheet().then(()=>{ document.getElementById('syncStatus').innerHTML='✅ URL tersimpan dan koneksi berhasil.'; }).catch(()=>{ document.getElementById('syncStatus').innerHTML='⚠️ URL tersimpan tapi gagal koneksi.'; }); }
+        else { localStorage.removeItem(STORAGE.URL); webAppUrl=''; document.getElementById('syncStatus').innerHTML='URL dihapus, backup nonaktif.'; }
     }
-
     function copyScriptCode() {
-        const scriptCode = `function doPost(e) {
+        let scriptCode = `function doPost(e) {
   const data = JSON.parse(e.postData.contents);
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   sheet.getRange("A1").setValue(JSON.stringify(data));
@@ -678,7 +526,7 @@ function doGet(e) {
         alert("Kode Apps Script disalin! Buka spreadsheet > Extensions > Apps Script, tempelkan, lalu deploy sebagai Web App.");
     }
 
-    // ========== INISIALISASI SETELAH LOGIN ==========
+    // INISIALISASI SETELAH LOGIN
     function initApp() {
         loadAll();
         populateLokasiDropdowns();
@@ -687,83 +535,51 @@ function doGet(e) {
         document.getElementById('webAppUrl').value = webAppUrl;
         fetchLastUpdate();
         // Event listeners
-        document.getElementById('loadPaymentBtn').addEventListener('click',()=>renderPaymentTable(document.getElementById('monthPicker').value));
-        document.getElementById('monthPicker').addEventListener('change',()=>renderPaymentTable(document.getElementById('monthPicker').value));
-        document.getElementById('selectAllBtn').addEventListener('click',()=>selectAll(true));
-        document.getElementById('unselectAllBtn').addEventListener('click',()=>selectAll(false));
-        document.getElementById('confirmSaveBtn').addEventListener('click',applyPending);
-        document.getElementById('cancelChangesBtn').addEventListener('click',cancelPending);
-        document.getElementById('headerCheckbox').addEventListener('change',(e)=>selectAll(e.target.checked));
-        document.getElementById('searchInput').addEventListener('input',()=>renderPaymentTable(currentMonth));
-        document.getElementById('filterLokasiInput').addEventListener('change',()=>renderPaymentTable(currentMonth));
-        document.getElementById('resetFilterBtn').addEventListener('click',()=>{
-            document.getElementById('searchInput').value = '';
-            document.getElementById('filterLokasiInput').value = '';
-            renderPaymentTable(currentMonth);
-        });
-        document.getElementById('loadYearRekapBtn').addEventListener('click',()=>renderRekapTahunan(document.getElementById('yearSelect').value));
-        document.getElementById('yearSelect').addEventListener('change',()=>renderRekapTahunan(document.getElementById('yearSelect').value));
-        document.getElementById('exportYearRekapBtn').addEventListener('click',()=>exportRekapTahunanCSV(document.getElementById('yearSelect').value));
-        document.getElementById('searchRekap').addEventListener('input',()=>renderRekapTahunan(document.getElementById('yearSelect').value));
-        document.getElementById('filterLokasiRekap').addEventListener('change',()=>renderRekapTahunan(document.getElementById('yearSelect').value));
-        document.getElementById('resetFilterRekapBtn').addEventListener('click',()=>{
-            document.getElementById('searchRekap').value = '';
-            document.getElementById('filterLokasiRekap').value = '';
-            renderRekapTahunan(document.getElementById('yearSelect').value);
-        });
-        document.getElementById('tambahKasKeluarBtn').addEventListener('click',tambahKasKeluar);
-        document.getElementById('exportKasKeluarBtn').addEventListener('click',exportKasKeluarCSV);
-        document.getElementById('exportAllPaymentsBtn').addEventListener('click',exportAllPayments);
-        document.getElementById('exportAllFacilitatorsBtn').addEventListener('click',exportFacilitators);
-        document.getElementById('importPaymentsFile').addEventListener('change',e=>{if(e.target.files[0]){let r=new FileReader(); r.onload=ev=>{importPayments(ev.target.result); e.target.value='';}; r.readAsText(e.target.files[0]);}});
-        document.getElementById('importFacilitatorFile').addEventListener('change',e=>{if(e.target.files[0]){let r=new FileReader(); r.onload=ev=>{importFacilitators(ev.target.result); e.target.value=''; populateLokasiDropdowns();}; r.readAsText(e.target.files[0]);}});
-        document.getElementById('resetDefaultBtn').addEventListener('click',resetDefault);
-        document.getElementById('saveWebAppUrl').addEventListener('click',saveWebAppUrl);
-        document.getElementById('copyScriptCodeBtn').addEventListener('click',copyScriptCode);
+        document.getElementById('loadPaymentBtn').onclick = ()=>renderPaymentTable(document.getElementById('monthPicker').value);
+        document.getElementById('monthPicker').onchange = ()=>renderPaymentTable(document.getElementById('monthPicker').value);
+        document.getElementById('selectAllBtn').onclick = ()=>selectAll(true);
+        document.getElementById('unselectAllBtn').onclick = ()=>selectAll(false);
+        document.getElementById('confirmSaveBtn').onclick = applyPending;
+        document.getElementById('cancelChangesBtn').onclick = cancelPending;
+        document.getElementById('headerCheckbox').onchange = (e)=>selectAll(e.target.checked);
+        document.getElementById('searchInput').oninput = ()=>renderPaymentTable(currentMonth);
+        document.getElementById('filterLokasiInput').onchange = ()=>renderPaymentTable(currentMonth);
+        document.getElementById('resetFilterBtn').onclick = ()=>{ document.getElementById('searchInput').value=''; document.getElementById('filterLokasiInput').value=''; renderPaymentTable(currentMonth); };
+        document.getElementById('loadYearRekapBtn').onclick = ()=>renderRekapTahunan(document.getElementById('yearSelect').value);
+        document.getElementById('yearSelect').onchange = ()=>renderRekapTahunan(document.getElementById('yearSelect').value);
+        document.getElementById('exportYearRekapBtn').onclick = ()=>exportRekapTahunanCSV(document.getElementById('yearSelect').value);
+        document.getElementById('searchRekap').oninput = ()=>renderRekapTahunan(document.getElementById('yearSelect').value);
+        document.getElementById('filterLokasiRekap').onchange = ()=>renderRekapTahunan(document.getElementById('yearSelect').value);
+        document.getElementById('resetFilterRekapBtn').onclick = ()=>{ document.getElementById('searchRekap').value=''; document.getElementById('filterLokasiRekap').value=''; renderRekapTahunan(document.getElementById('yearSelect').value); };
+        document.getElementById('tambahKasKeluarBtn').onclick = tambahKasKeluar;
+        document.getElementById('exportKasKeluarBtn').onclick = exportKasKeluarCSV;
+        document.getElementById('exportAllPaymentsBtn').onclick = exportAllPayments;
+        document.getElementById('exportAllFacilitatorsBtn').onclick = exportFacilitators;
+        document.getElementById('importPaymentsFile').onchange = e=>{ if(e.target.files[0]){ let r=new FileReader(); r.onload=ev=>{ importPayments(ev.target.result); e.target.value=''; }; r.readAsText(e.target.files[0]); } };
+        document.getElementById('importFacilitatorFile').onchange = e=>{ if(e.target.files[0]){ let r=new FileReader(); r.onload=ev=>{ importFacilitators(ev.target.result); e.target.value=''; populateLokasiDropdowns(); }; r.readAsText(e.target.files[0]); } };
+        document.getElementById('resetDefaultBtn').onclick = resetDefault;
+        document.getElementById('saveWebAppUrl').onclick = saveWebAppUrl;
+        document.getElementById('copyScriptCodeBtn').onclick = copyScriptCode;
         // Tab switching
         let tabs = document.querySelectorAll('.tab-btn');
         let contents = { payment:document.getElementById('paymentTab'), rekapTahunan:document.getElementById('rekapTahunanTab'), kasKeluarTab:document.getElementById('kasKeluarTab'), batch:document.getElementById('batchTab'), backup:document.getElementById('backupTab') };
-        function switchTab(tab) {
-            Object.values(contents).forEach(c=>c.style.display='none');
-            contents[tab].style.display='block';
-            tabs.forEach(btn=>btn.classList.remove('active'));
-            document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
-            if(tab==='payment') renderPaymentTable(document.getElementById('monthPicker').value);
-            if(tab==='rekapTahunan') renderRekapTahunan(document.getElementById('yearSelect').value);
-            if(tab==='kasKeluarTab') renderKasKeluar();
-        }
-        tabs.forEach(btn => btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
+        function switchTab(tab) { Object.values(contents).forEach(c=>c.style.display='none'); contents[tab].style.display='block'; tabs.forEach(btn=>btn.classList.remove('active')); document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active'); if(tab==='payment') renderPaymentTable(document.getElementById('monthPicker').value); if(tab==='rekapTahunan') renderRekapTahunan(document.getElementById('yearSelect').value); if(tab==='kasKeluarTab') renderKasKeluar(); }
+        tabs.forEach(btn=>btn.onclick = ()=>switchTab(btn.dataset.tab));
         renderPaymentTable('2026-01');
         switchTab('payment');
     }
 
-    // LOGIN HANDLER
+    // LOGIN
     const loginContainer = document.getElementById('loginContainer');
     const appContent = document.getElementById('appContent');
     const passwordInput = document.getElementById('passwordInput');
     const togglePassword = document.getElementById('togglePassword');
     const loginBtn = document.getElementById('loginBtn');
     const loginError = document.getElementById('loginError');
-
-    togglePassword.addEventListener('click', () => {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
-    });
-
-    function doLogin() {
-        if (passwordInput.value === "kasprodamai") {
-            loginContainer.style.display = 'none';
-            appContent.style.display = 'block';
-            initApp();
-        } else {
-            loginError.innerText = 'Password salah! Silakan coba lagi.';
-            passwordInput.value = '';
-            passwordInput.focus();
-        }
-    }
-    loginBtn.addEventListener('click', doLogin);
-    passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') doLogin(); });
+    togglePassword.onclick = ()=>{ let type = passwordInput.getAttribute('type')==='password'?'text':'password'; passwordInput.setAttribute('type',type); togglePassword.textContent = type==='password'?'👁️':'🙈'; };
+    function doLogin() { if(passwordInput.value === "kasprodamai") { loginContainer.style.display='none'; appContent.style.display='block'; initApp(); } else { loginError.innerText='Password salah!'; passwordInput.value=''; passwordInput.focus(); } }
+    loginBtn.onclick = doLogin;
+    passwordInput.onkeypress = e=>{ if(e.key==='Enter') doLogin(); };
 </script>
 </body>
 </html>

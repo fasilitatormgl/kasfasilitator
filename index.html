@@ -3,79 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kas Fasilitator Magelang | Auto Backup ke Spreadsheet</title>
+    <title>Kas Fasilitator Magelang | Auto Backup Spreadsheet</title>
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
-        }
+        * { box-sizing: border-box; font-family: system-ui, 'Segoe UI', sans-serif; }
         body {
             background: #f0f4f8;
             margin: 0;
             padding: 20px;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        /* Login overlay (sama seperti sebelumnya) */
+        /* Login */
         .login-container {
             background: white;
             border-radius: 32px;
             padding: 2rem;
             width: 100%;
             max-width: 400px;
-            margin: 0 auto;
             box-shadow: 0 20px 35px rgba(0,0,0,0.1);
             text-align: center;
         }
         .login-container h2 { color: #1e6f5c; margin-bottom: 1.5rem; }
-        .login-container input { width: 100%; padding: 12px 16px; margin: 10px 0; border-radius: 60px; border: 1px solid #cbd5e1; }
-        .password-wrapper { position: relative; display: flex; align-items: center; }
-        .password-wrapper input { flex: 1; padding-right: 50px; }
-        .toggle-pwd { position: absolute; right: 12px; background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #1e6f5c; }
-        button { padding: 8px 14px; border-radius: 40px; border: 1px solid #cbd5e1; background: white; cursor: pointer; }
-        button.primary { background: #1e6f5c; color: white; border: none; }
-        button.secondary { background: #e2e8f0; color: #1e293b; }
-        button.warning { background: #f59e0b; color: white; border: none; }
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .password-wrapper input {
+            width: 100%;
+            padding: 12px 16px;
+            padding-right: 50px;
+            border-radius: 60px;
+            border: 1px solid #cbd5e1;
+            font-size: 1rem;
+        }
+        .toggle-pwd {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #1e6f5c;
+        }
+        button.primary {
+            background: #1e6f5c;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 60px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
         .error-msg { color: #dc2626; font-size: 0.85rem; margin-top: 10px; }
+        /* Aplikasi utama */
         .app-content { display: none; width: 100%; max-width: 1400px; margin: 0 auto; }
-        /* style aplikasi utama (sama seperti sebelumnya, disederhanakan) */
-        .header, .card, .total-card, .scrollable-table, .filter-group, .confirm-bar { 
-            background: white; border-radius: 24px; padding: 1rem; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        .header, .card, .total-card {
+            background: white;
+            border-radius: 24px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         .card-title { font-size: 1.3rem; font-weight: 600; border-left: 5px solid #1e6f5c; padding-left: 16px; margin-bottom: 1rem; }
         .flex-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 20px; }
+        .filter-group { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+        input, select, button {
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 0.9rem;
+        }
+        button.secondary { background: #e2e8f0; color: #1e293b; cursor: pointer; }
+        button.warning { background: #f59e0b; color: white; border: none; cursor: pointer; }
+        .scrollable-table { overflow-x: auto; max-height: 550px; overflow-y: auto; border-radius: 16px; border: 1px solid #eef2f6; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 10px 6px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+        th { background: #f1f5f9; position: sticky; top: 0; }
         .status-badge { display: inline-block; padding: 4px 12px; border-radius: 30px; font-size: 0.8rem; font-weight: 500; }
         .lunas { background: #c6f7e2; color: #0b4d3a; }
         .belum { background: #ffe2e2; color: #b91c1c; }
         .lunas-biru { background: #3b82f6; color: white; }
         .belum-merah { background: #ef4444; color: white; }
         .status-cell { display: inline-block; padding: 4px 8px; border-radius: 20px; min-width: 70px; text-align: center; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th, td { padding: 8px 6px; border-bottom: 1px solid #e2e8f0; }
-        .scrollable-table { overflow-x: auto; max-height: 500px; overflow-y: auto; }
+        .confirm-bar { background: #fef9e3; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
         .info-text { font-size: 0.8rem; background: #f1f5f9; padding: 10px; border-radius: 16px; margin-top: 16px; }
         .sync-status { font-size: 0.8rem; color: #1e6f5c; margin-top: 8px; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+        .tab-btn {
+            background: white; border: none; padding: 10px 24px; font-size: 1rem; font-weight: 600;
+            border-radius: 40px; cursor: pointer; transition: 0.2s; color: #2d3e50;
+        }
+        .tab-btn.active { background: #1e6f5c; color: white; }
+        .total-card { background: linear-gradient(135deg, #1e6f5c, #0f4c3f); color: white; display: flex; flex-wrap: wrap; justify-content: space-between; }
+        .total-item { text-align: center; padding: 8px 16px; }
+        .total-item .label { font-size: 0.8rem; opacity: 0.9; }
+        .total-item .value { font-size: 1.4rem; font-weight: bold; }
         footer { text-align: center; margin-top: 2rem; color: #6c757d; font-size: 0.8rem; }
         @media (max-width: 720px) { body { padding: 12px; } td, th { font-size: 0.7rem; } }
     </style>
 </head>
 <body>
+<!-- LAYAR LOGIN -->
 <div id="loginContainer" class="login-container">
     <h2>🔐 Akses Kas Fasilitator</h2>
     <div class="password-wrapper">
-        <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
+        <input type="password" id="passwordInput" placeholder="Masukkan password" autocomplete="off">
         <button type="button" class="toggle-pwd" id="togglePassword">👁️</button>
     </div>
-    <button id="loginBtn" class="primary" style="width:100%; margin-top:10px;">Login</button>
+    <button id="loginBtn" class="primary">Login</button>
     <div id="loginError" class="error-msg"></div>
 </div>
 
+<!-- KONTEN UTAMA APLIKASI -->
 <div id="appContent" class="app-content">
     <div class="header" style="display:flex; justify-content:space-between; align-items:center;">
         <div><h1>📋 Kas Fasilitator Magelang</h1><div class="sub">Iuran Rp10.000/orang/bulan • Total: <span id="totalFasilitatorCount">0</span></div></div>
         <div class="badge" style="background:#e6f7f0; padding:6px 14px; border-radius:40px;">🔄 Backup Otomatis ke Spreadsheet</div>
     </div>
 
-    <div class="tabs" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
+    <div class="tabs">
         <button class="tab-btn active" data-tab="payment">💰 Input Iuran</button>
         <button class="tab-btn" data-tab="rekapTahunan">📅 Rekap Tahunan</button>
         <button class="tab-btn" data-tab="kasKeluarTab">💸 Kas Keluar</button>
@@ -83,7 +136,7 @@
         <button class="tab-btn" data-tab="backup">☁️ Integrasi Spreadsheet</button>
     </div>
 
-    <!-- TAB INPUT IURAN (sama seperti sebelumnya, tapi disederhanakan) -->
+    <!-- TAB INPUT IURAN -->
     <div id="paymentTab" class="tab-content">
         <div class="card">
             <div class="card-title">💰 Input Iuran Bulanan</div>
@@ -93,43 +146,44 @@
                 <button id="selectAllBtn" class="secondary">✅ Select All</button>
                 <button id="unselectAllBtn" class="secondary">❌ Unselect All</button>
             </div>
-            <div class="filter-group" style="display:flex; gap:12px; flex-wrap:wrap;">
+            <div class="filter-group">
                 <select id="filterLokasiInput"><option value="">SEMUA LOKASI</option></select>
-                <input type="text" id="searchInput" placeholder="Cari nama/lokasi">
-                <button id="resetFilterBtn" class="secondary">Reset</button>
+                <input type="text" id="searchInput" placeholder="Cari nama/lokasi...">
+                <button id="resetFilterBtn" class="secondary">Reset Filter</button>
             </div>
-            <div id="confirmBar" class="confirm-bar" style="display:none; background:#fef9e3; padding:12px; border-radius:16px;">
-                <span>⚠️ Ada perubahan checklist. Simpan?</span>
+            <div id="confirmBar" class="confirm-bar" style="display:none;">
+                <span>⚠️ Ada perubahan checklist. Simpan perubahan?</span>
                 <div><button id="confirmSaveBtn" class="primary">✅ Simpan</button><button id="cancelChangesBtn" class="secondary">Batal</button></div>
             </div>
             <div class="scrollable-table">
                 <table id="paymentTable">
-                    <thead><tr><th><input type="checkbox" id="headerCheckbox"></th><th>No</th><th>Nama</th><th>Lokasi</th><th>Status</th><th>Nominal</th></tr></thead>
+                    <thead><tr><th><input type="checkbox" id="headerCheckbox"></th><th>No</th><th>Nama Fasilitator</th><th>Lokasi Tugas</th><th>Status</th><th>Nominal</th></tr></thead>
                     <tbody id="paymentTbody"></tbody>
                 </table>
             </div>
+            <div class="info-text">✅ Centang = LUNAS. Gunakan filter lokasi untuk menampilkan kelompok tertentu.</div>
         </div>
     </div>
 
     <!-- TAB REKAP TAHUNAN -->
     <div id="rekapTahunanTab" class="tab-content" style="display:none;">
         <div class="card">
-            <div class="card-title">📅 Rekap Tahunan (Biru=LUNAS, Merah=BELUM)</div>
+            <div class="card-title">📅 Rekap Tahunan Iuran (Biru = LUNAS, Merah = BELUM)</div>
             <div class="flex-row">
-                <select id="yearSelect"><option value="2026">2026</option><option value="2025">2025</option></select>
-                <button id="loadYearRekapBtn" class="primary">Tampilkan</button>
-                <button id="exportYearRekapBtn" class="secondary">Export CSV</button>
+                <select id="yearSelect"><option value="2026">2026</option><option value="2025">2025</option><option value="2027">2027</option></select>
+                <button id="loadYearRekapBtn" class="primary">📊 Tampilkan</button>
+                <button id="exportYearRekapBtn" class="secondary">📎 Export CSV</button>
             </div>
             <div class="filter-group">
                 <select id="filterLokasiRekap"><option value="">SEMUA LOKASI</option></select>
                 <input type="text" id="searchRekap" placeholder="Cari...">
                 <button id="resetFilterRekapBtn" class="secondary">Reset</button>
             </div>
-            <div class="total-card" style="background: linear-gradient(135deg,#1e6f5c,#0f4c3f); color:white; display:flex; flex-wrap:wrap; justify-content:space-between; padding:16px;">
-                <div><div class="label">Iuran Masuk (Tahun)</div><div class="value" id="totalIuranTahun">Rp0</div></div>
-                <div><div class="label">Kas Keluar (Tahun)</div><div class="value" id="totalKasKeluarTahun">Rp0</div></div>
-                <div><div class="label">Sisa Anggaran</div><div class="value" id="sisaAnggaranTahun">Rp0</div></div>
-                <div><div class="label">Total Seluruh Waktu</div><div class="value" id="totalAllTime">Rp0</div></div>
+            <div class="total-card">
+                <div class="total-item"><div class="label">Total Iuran Masuk (Tahun Ini)</div><div class="value" id="totalIuranTahun">Rp0</div></div>
+                <div class="total-item"><div class="label">Total Kas Keluar (Tahun Ini)</div><div class="value" id="totalKasKeluarTahun">Rp0</div></div>
+                <div class="total-item"><div class="label">Sisa Anggaran (Tahun Ini)</div><div class="value" id="sisaAnggaranTahun">Rp0</div></div>
+                <div class="total-item"><div class="label">Total Seluruh Waktu</div><div class="value" id="totalAllTime">Rp0</div></div>
             </div>
             <div class="scrollable-table">
                 <table id="rekapTahunanTable"><thead id="rekapTahunHeader"></thead><tbody id="rekapTahunanTbody"></tbody></table>
@@ -141,14 +195,15 @@
     <!-- TAB KAS KELUAR -->
     <div id="kasKeluarTab" class="tab-content" style="display:none;">
         <div class="card">
-            <div class="card-title">💸 Kas Keluar</div>
+            <div class="card-title">💸 Catat Kas Keluar</div>
             <div class="flex-row">
                 <input type="date" id="kasTanggal"><input type="number" id="kasNominal" placeholder="Nominal"><input type="text" id="kasKeterangan" placeholder="Keterangan">
                 <button id="tambahKasKeluarBtn" class="warning">➕ Tambah</button>
             </div>
             <div class="scrollable-table">
-                <table><thead><tr><th>Tanggal</th><th>Bulan</th><th>Nominal</th><th>Keterangan</th><th>Aksi</th></tr></thead><tbody id="kasKeluarTbody"></tbody></table>
-            </div>
+                <table><thead><tr><th>Tanggal</th><th>Bulan</th><th>Nominal</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+                <tbody id="kasKeluarTbody"></tbody>
+            </table>
             <button id="exportKasKeluarBtn" class="secondary">📎 Export CSV Kas Keluar</button>
         </div>
     </div>
@@ -156,13 +211,13 @@
     <!-- TAB IMPORT/EXPORT -->
     <div id="batchTab" class="tab-content" style="display:none;">
         <div class="card">
-            <div class="card-title">📁 Import/Export Lokal</div>
+            <div class="card-title">📁 Import/Export Data Lokal</div>
             <div class="flex-row">
-                <button id="exportAllPaymentsBtn" class="secondary">Export Semua Iuran</button>
-                <button id="exportAllFacilitatorsBtn" class="secondary">Export Daftar Fasilitator</button>
-                <label class="secondary" style="padding:8px 14px; cursor:pointer;">📂 Import Iuran CSV<input type="file" id="importPaymentsFile" accept=".csv" style="display:none;"></label>
-                <label class="secondary" style="padding:8px 14px; cursor:pointer;">📂 Import Fasilitator CSV<input type="file" id="importFacilitatorFile" accept=".csv" style="display:none;"></label>
-                <button id="resetDefaultBtn" class="secondary">Reset Default</button>
+                <button id="exportAllPaymentsBtn" class="secondary">📎 Export Semua Iuran</button>
+                <button id="exportAllFacilitatorsBtn" class="secondary">📇 Export Daftar Fasilitator+Lokasi</button>
+                <label class="secondary" style="padding:8px 14px; cursor:pointer;">📂 Import Iuran (CSV)<input type="file" id="importPaymentsFile" accept=".csv" style="display:none;"></label>
+                <label class="secondary" style="padding:8px 14px; cursor:pointer;">📂 Import Fasilitator+Lokasi<input type="file" id="importFacilitatorFile" accept=".csv" style="display:none;"></label>
+                <button id="resetDefaultBtn" class="secondary">🔄 Reset ke Data Default</button>
             </div>
         </div>
     </div>
@@ -171,45 +226,33 @@
     <div id="backupTab" class="tab-content" style="display:none;">
         <div class="card">
             <div class="card-title">☁️ Integrasi Google Spreadsheet (Backup Otomatis)</div>
-            <div class="info-text" style="margin-bottom:16px;">
+            <div class="info-text">
                 <strong>🔧 Cara Setup:</strong><br>
-                1. Buat Google Spreadsheet baru, lalu buka <strong>Extensions > Apps Script</strong>.<br>
-                2. Hapus kode yang ada, lalu salin kode dari tombol di bawah ini.<br>
+                1. Buat Google Spreadsheet baru, buka <strong>Extensions > Apps Script</strong>.<br>
+                2. Hapus kode, lalu salin kode dari tombol di bawah.<br>
                 3. Deploy sebagai <strong>Web App</strong> (Execute as: Me, Access: Anyone).<br>
-                4. Salin URL Web App, lalu tempelkan di kolom di bawah dan klik <strong>Simpan & Uji</strong>.
+                4. Salin URL Web App, tempelkan di bawah, klik <strong>Simpan & Uji</strong>.
             </div>
             <button id="copyScriptCodeBtn" class="primary">📋 Salin Kode Apps Script</button>
-            <hr style="margin: 20px 0;">
+            <hr>
             <div class="form-group">
                 <label>URL Web App (Endpoint)</label>
                 <input type="url" id="webAppUrl" placeholder="https://script.google.com/macros/s/.../exec" style="width:100%;">
                 <button id="saveWebAppUrl" class="primary" style="margin-top:8px;">💾 Simpan & Uji Koneksi</button>
             </div>
             <div id="syncStatus" class="sync-status"></div>
-            <div class="info-text" style="margin-top:16px;">
-                ✅ <strong>Setelah terhubung</strong>, setiap kali Anda menyimpan iuran atau menambah/menghapus kas keluar, data akan otomatis dikirim ke spreadsheet sebagai backup.<br>
+            <div class="info-text">
+                ✅ <strong>Setelah terhubung</strong>, setiap perubahan iuran atau kas keluar akan otomatis backup ke spreadsheet.<br>
                 📅 <strong>Terakhir update dari spreadsheet:</strong> <span id="lastSyncFromSheet">Belum tersinkron</span>
             </div>
         </div>
     </div>
-    <footer>Data disimpan di browser dan otomatis backup ke spreadsheet jika diatur</footer>
+    <footer>Data tersimpan di browser & otomatis backup ke spreadsheet jika diatur</footer>
 </div>
 
 <script>
-    // ======================= DATA (sama seperti sebelumnya) =======================
-    const DEFAULT_DATA = [ /* data lengkap sama seperti sebelumnya, dipotong agar tidak terlalu panjang, tapi tetap lengkap di implementasi asli */ ];
-    // Karena keterbatasan token, saya tulis ulang data default secara ringkas, tapi tetap mencakup semua nama. 
-    // Sebenarnya di kode final nanti data lengkap akan dimasukkan. Di sini saya sertakan data lengkap yang sudah pernah dibuat.
-    // Untuk menghemat, saya asumsikan data lengkap sudah ada. Di kode asli sebelumnya sudah lengkap 70+ orang.
-    // Saya akan gunakan data yang sudah ada di memori.
-    
-    // Untuk keperluan demo, saya akan isi DEFAULT_DATA dengan data yang sama seperti sebelumnya (sudah saya simpan di internal).
-    // Namun karena token terbatas, saya akan tulis ulang secara singkat namun tetap berisi semua fasilitator (saya yakin sudah ada di jawaban sebelumnya).
-    // Di sini saya sertakan data lengkap dari jawaban sebelumnya (tidak saya tulis ulang semua agar tidak kelebihan, tapi saat implementasi asli data sudah ada).
-    // Saya akan gunakan data dari localStorage atau default dari kode sebelumnya. Untuk kode final, pastikan DEFAULT_DATA berisi semua 70+ orang.
-    
-    // Mari kita gunakan data dari jawaban sebelumnya (saya akan masukkan object yang sama)
-    const DEFAULT_FULL = [
+    // ======================= DATA DEFAULT LENGKAP =======================
+    const DEFAULT_DATA = [
         { name: "Muhammad Rajasa Danny Alamsyah, S.H.", lokasi: "Koordinator Kota" },
         { name: "Ardy Hudhatama, S.Pd.", lokasi: "Koordinator Magelang Utara" },
         { name: "Ardian Dwi Chandra, S.M.", lokasi: "Kramat Utara (Koordinator)" },
@@ -285,20 +328,21 @@
     let facilitators = [], payments = {}, kasKeluar = [];
     const DEFAULT_AMOUNT = 10000;
     const STORAGE = { FAC: 'kas_fac_lokasi', PAY: 'kas_pay_lokasi', KAS: 'kas_keluar_lokasi', URL: 'kas_spreadsheet_url' };
+    let webAppUrl = "";
 
+    // Helper
     function saveAll() {
         localStorage.setItem(STORAGE.FAC, JSON.stringify(facilitators));
         localStorage.setItem(STORAGE.PAY, JSON.stringify(payments));
         localStorage.setItem(STORAGE.KAS, JSON.stringify(kasKeluar));
         document.getElementById('totalFasilitatorCount').innerText = facilitators.length;
-        // Trigger backup ke spreadsheet
-        backupToSpreadsheet();
+        backupToSpreadsheet(); // auto backup setiap ada perubahan
     }
 
     function loadAll() {
         let f = localStorage.getItem(STORAGE.FAC);
         if (f) facilitators = JSON.parse(f);
-        else facilitators = DEFAULT_FULL.map((d,idx) => ({ id: idx+1, name: d.name, lokasi: d.lokasi }));
+        else facilitators = DEFAULT_DATA.map((d,idx) => ({ id: idx+1, name: d.name, lokasi: d.lokasi }));
         let p = localStorage.getItem(STORAGE.PAY);
         payments = p ? JSON.parse(p) : {};
         let k = localStorage.getItem(STORAGE.KAS);
@@ -306,4 +350,420 @@
         document.getElementById('totalFasilitatorCount').innerText = facilitators.length;
     }
 
-    // ========== BACKUP K
+    // Backup ke spreadsheet
+    async function backupToSpreadsheet() {
+        webAppUrl = localStorage.getItem(STORAGE.URL) || "";
+        if (!webAppUrl) return;
+        const data = { facilitators, payments, kasKeluar, timestamp: new Date().toISOString() };
+        try {
+            const res = await fetch(webAppUrl, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.status === 'success') {
+                document.getElementById('syncStatus').innerHTML = `✅ Backup berhasil ${new Date().toLocaleString()}`;
+                fetchLastUpdate();
+            } else {
+                document.getElementById('syncStatus').innerHTML = `⚠️ Backup gagal: ${result.message}`;
+            }
+        } catch(e) {
+            console.error(e);
+            document.getElementById('syncStatus').innerHTML = `❌ Gagal terhubung ke spreadsheet.`;
+        }
+    }
+
+    async function fetchLastUpdate() {
+        if (!webAppUrl) return;
+        try {
+            const res = await fetch(webAppUrl + '?action=getLastUpdate');
+            const data = await res.json();
+            if (data.lastUpdate) document.getElementById('lastSyncFromSheet').innerHTML = data.lastUpdate;
+        } catch(e) {}
+    }
+
+    // ========== FITUR APLIKASI ==========
+    function getUniqueLokasi() {
+        let set = new Set(facilitators.map(f => f.lokasi).filter(l => l && l.trim() !== ""));
+        return Array.from(set).sort();
+    }
+
+    function populateLokasiDropdowns() {
+        let lokasiList = getUniqueLokasi();
+        let select1 = document.getElementById('filterLokasiInput');
+        let select2 = document.getElementById('filterLokasiRekap');
+        [select1, select2].forEach(sel => {
+            if (!sel) return;
+            let current = sel.value;
+            sel.innerHTML = '<option value="">SEMUA LOKASI</option>';
+            lokasiList.forEach(l => { let opt = document.createElement('option'); opt.value = l; opt.textContent = l; sel.appendChild(opt); });
+            if (current && lokasiList.includes(current)) sel.value = current;
+            else sel.value = "";
+        });
+    }
+
+    function filterFacilitators(searchText, lokasiFilter) {
+        return facilitators.filter(f => {
+            let matchLokasi = !lokasiFilter || f.lokasi === lokasiFilter;
+            let matchText = !searchText || f.name.toLowerCase().includes(searchText.toLowerCase()) || f.lokasi.toLowerCase().includes(searchText.toLowerCase());
+            return matchLokasi && matchText;
+        });
+    }
+
+    let pendingChanges = null, currentMonth = "";
+    function addPending(fId, newStatus) {
+        if (!pendingChanges) pendingChanges = { month: currentMonth, updates: [] };
+        let exist = pendingChanges.updates.find(u => u.id === fId);
+        if (exist) exist.status = newStatus;
+        else pendingChanges.updates.push({ id: fId, status: newStatus });
+        document.getElementById('confirmBar').style.display = 'flex';
+        renderPaymentTable(currentMonth);
+    }
+    function applyPending() {
+        if (pendingChanges && pendingChanges.month) {
+            let monthData = payments[pendingChanges.month];
+            if (!monthData) monthData = facilitators.map(f => ({ facilitatorId: f.id, status: false }));
+            for (let upd of pendingChanges.updates) {
+                let rec = monthData.find(r => r.facilitatorId === upd.id);
+                if (rec) rec.status = upd.status;
+                else monthData.push({ facilitatorId: upd.id, status: upd.status });
+            }
+            payments[pendingChanges.month] = monthData;
+            saveAll();
+        }
+        pendingChanges = null;
+        document.getElementById('confirmBar').style.display = 'none';
+        renderPaymentTable(currentMonth);
+    }
+    function cancelPending() { pendingChanges = null; document.getElementById('confirmBar').style.display = 'none'; renderPaymentTable(currentMonth); }
+
+    function renderPaymentTable(month) {
+        currentMonth = month;
+        let monthData = payments[month] || facilitators.map(f => ({ facilitatorId: f.id, status: false }));
+        let statusMap = new Map(monthData.map(p => [p.facilitatorId, p.status]));
+        if (pendingChanges && pendingChanges.month === month) {
+            for (let up of pendingChanges.updates) statusMap.set(up.id, up.status);
+        }
+        let searchText = document.getElementById('searchInput')?.value || '';
+        let lokasiFilter = document.getElementById('filterLokasiInput')?.value || '';
+        let filtered = filterFacilitators(searchText, lokasiFilter);
+        let tbody = document.getElementById('paymentTbody');
+        tbody.innerHTML = '';
+        filtered.forEach((f, idx) => {
+            let isPaid = statusMap.get(f.id) || false;
+            let row = tbody.insertRow();
+            let chkCell = row.insertCell(0);
+            let chk = document.createElement('input'); chk.type = 'checkbox'; chk.checked = isPaid;
+            chk.onchange = (e) => addPending(f.id, e.target.checked);
+            chkCell.appendChild(chk);
+            row.insertCell(1).innerText = facilitators.findIndex(orig => orig.id === f.id) + 1;
+            row.insertCell(2).innerText = f.name;
+            row.insertCell(3).innerText = f.lokasi || '-';
+            let statusCell = row.insertCell(4);
+            let span = document.createElement('span'); span.innerText = isPaid ? 'LUNAS' : 'BELUM';
+            span.className = `status-badge ${isPaid ? 'lunas' : 'belum'}`;
+            statusCell.appendChild(span);
+            row.insertCell(5).innerText = isPaid ? `Rp${DEFAULT_AMOUNT.toLocaleString()}` : 'Rp0';
+        });
+        let headerChk = document.getElementById('headerCheckbox');
+        if (headerChk) {
+            let allCb = document.querySelectorAll('#paymentTbody input[type="checkbox"]');
+            headerChk.checked = allCb.length > 0 && Array.from(allCb).every(c => c.checked);
+        }
+    }
+
+    function selectAll(checked) {
+        let searchText = document.getElementById('searchInput')?.value || '';
+        let lokasiFilter = document.getElementById('filterLokasiInput')?.value || '';
+        let filtered = filterFacilitators(searchText, lokasiFilter);
+        let updates = filtered.map(f => ({ id: f.id, status: checked }));
+        pendingChanges = { month: currentMonth, updates };
+        document.getElementById('confirmBar').style.display = 'flex';
+        renderPaymentTable(currentMonth);
+    }
+
+    // REKAP TAHUNAN
+    function renderRekapTahunan(tahun) {
+        let months = [];
+        for (let i = 1; i <= 12; i++) months.push(`${tahun}-${String(i).padStart(2,'0')}`);
+        let searchText = document.getElementById('searchRekap')?.value || '';
+        let lokasiFilter = document.getElementById('filterLokasiRekap')?.value || '';
+        let filtered = filterFacilitators(searchText, lokasiFilter);
+        let thead = document.getElementById('rekapTahunHeader');
+        thead.innerHTML = '<tr><th>No</th><th>Nama</th><th>Lokasi Tugas</th>' + months.map(m => `<th>${m.slice(5)}</th>`).join('') + '</tr>';
+        let tbody = document.getElementById('rekapTahunanTbody');
+        tbody.innerHTML = '';
+        let totalIuranTahun = 0;
+        filtered.forEach((f, idx) => {
+            let row = tbody.insertRow();
+            row.insertCell(0).innerText = idx+1;
+            row.insertCell(1).innerText = f.name;
+            row.insertCell(2).innerText = f.lokasi || '-';
+            for (let m of months) {
+                let monthData = payments[m] || [];
+                let status = monthData.find(p => p.facilitatorId === f.id)?.status || false;
+                if (status) totalIuranTahun += DEFAULT_AMOUNT;
+                let cell = row.insertCell();
+                let div = document.createElement('div');
+                div.className = `status-cell ${status ? 'lunas-biru' : 'belum-merah'}`;
+                div.innerText = status ? 'SUDAH' : 'BELUM';
+                cell.appendChild(div);
+            }
+        });
+        let totalKasKeluarTahun = kasKeluar.filter(k => k.bulan && k.bulan.startsWith(tahun)).reduce((s, k) => s + k.nominal, 0);
+        let totalAllTime = 0;
+        for (let m in payments) totalAllTime += payments[m].filter(p => p.status).length * DEFAULT_AMOUNT;
+        let totalAllKas = kasKeluar.reduce((s,k) => s + k.nominal, 0);
+        document.getElementById('totalIuranTahun').innerHTML = `Rp${totalIuranTahun.toLocaleString()}`;
+        document.getElementById('totalKasKeluarTahun').innerHTML = `Rp${totalKasKeluarTahun.toLocaleString()}`;
+        document.getElementById('sisaAnggaranTahun').innerHTML = `Rp${(totalIuranTahun - totalKasKeluarTahun).toLocaleString()}`;
+        document.getElementById('totalAllTime').innerHTML = `Rp${(totalAllTime - totalAllKas).toLocaleString()}`;
+        let kasInfo = kasKeluar.filter(k => k.bulan && k.bulan.startsWith(tahun));
+        let infoDiv = document.getElementById('rekapKasKeluarInfo');
+        if (kasInfo.length) infoDiv.innerHTML = `<strong>💸 Kas Keluar Tahun ${tahun}:</strong> ${kasInfo.map(k => `${k.tanggal} Rp${k.nominal.toLocaleString()} (${k.keterangan})`).join(' | ')}`;
+        else infoDiv.innerHTML = `<strong>💸 Kas Keluar Tahun ${tahun}:</strong> Tidak ada catatan.`;
+    }
+
+    function exportRekapTahunanCSV(tahun) {
+        let months = [];
+        for (let i = 1; i <= 12; i++) months.push(`${tahun}-${String(i).padStart(2,'0')}`);
+        let searchText = document.getElementById('searchRekap')?.value || '';
+        let lokasiFilter = document.getElementById('filterLokasiRekap')?.value || '';
+        let filtered = filterFacilitators(searchText, lokasiFilter);
+        let rows = [["No", "Nama", "Lokasi", ...months.map(m => m.slice(5))]];
+        filtered.forEach((f, idx) => {
+            let row = [idx+1, f.name, f.lokasi];
+            for (let m of months) {
+                let status = (payments[m] || []).find(p => p.facilitatorId === f.id)?.status || false;
+                row.push(status ? "SUDAH" : "BELUM");
+            }
+            rows.push(row);
+        });
+        downloadCSV(rows.map(r => r.join(",")).join("\n"), `rekap_tahunan_${tahun}_filter.csv`);
+    }
+
+    // KAS KELUAR
+    function renderKasKeluar() {
+        let tbody = document.getElementById('kasKeluarTbody');
+        tbody.innerHTML = '';
+        kasKeluar.slice().reverse().forEach((k, idx) => {
+            let row = tbody.insertRow();
+            row.insertCell(0).innerText = k.tanggal;
+            row.insertCell(1).innerText = k.bulan;
+            row.insertCell(2).innerText = `Rp${k.nominal.toLocaleString()}`;
+            row.insertCell(3).innerText = k.keterangan;
+            let delCell = row.insertCell(4);
+            let delBtn = document.createElement('button'); delBtn.innerText = 'Hapus'; delBtn.className = 'secondary'; delBtn.style.padding = '4px 8px';
+            delBtn.onclick = () => { if(confirm('Hapus kas keluar?')) { kasKeluar.splice(kasKeluar.length-1-idx,1); saveAll(); renderKasKeluar(); } };
+            delCell.appendChild(delBtn);
+        });
+    }
+
+    function tambahKasKeluar() {
+        let tanggal = document.getElementById('kasTanggal').value;
+        let nominal = parseInt(document.getElementById('kasNominal').value);
+        let keterangan = document.getElementById('kasKeterangan').value.trim();
+        if (!tanggal) { alert("Pilih tanggal"); return; }
+        if (isNaN(nominal) || nominal <= 0) { alert("Nominal > 0"); return; }
+        if (!keterangan) keterangan = "-";
+        let bulan = tanggal.slice(0,7);
+        kasKeluar.push({ tanggal, bulan, nominal, keterangan });
+        saveAll();
+        renderKasKeluar();
+        document.getElementById('kasNominal').value = '';
+        document.getElementById('kasKeterangan').value = '';
+    }
+
+    function exportKasKeluarCSV() { let rows = [["Tanggal","Bulan","Nominal","Keterangan"]]; kasKeluar.forEach(k => rows.push([k.tanggal, k.bulan, k.nominal, k.keterangan])); downloadCSV(rows.map(r=>r.join(",")).join("\n"), "kas_keluar.csv"); }
+
+    // IMPORT EXPORT
+    function exportAllPayments() {
+        let rows = [["bulan","nama_fasilitator","status"]];
+        for (let bulan in payments) {
+            payments[bulan].forEach(p => {
+                let f = facilitators.find(fx => fx.id === p.facilitatorId);
+                if (f) rows.push([bulan, f.name, p.status ? "LUNAS" : "BELUM"]);
+            });
+        }
+        downloadCSV(rows.map(r=>r.join(",")).join("\n"), "semua_iuran.csv");
+    }
+    function exportFacilitators() { let rows = [["nama","lokasi"]]; facilitators.forEach(f => rows.push([f.name, f.lokasi])); downloadCSV(rows.map(r=>r.join(",")).join("\n"), "fasilitator_lokasi.csv"); }
+    function importFacilitators(csv) {
+        let lines = csv.split(/\r?\n/).filter(l=>l.trim());
+        let start = lines[0]?.toLowerCase().includes('nama') ? 1 : 0;
+        let newList = [];
+        for (let i=start; i<lines.length; i++) {
+            let parts = lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,''));
+            let name = parts[0]; let lokasi = parts[1] || '';
+            if (name) newList.push({ name, lokasi });
+        }
+        if (newList.length) {
+            facilitators = newList.map((d,idx) => ({ id: idx+1, name: d.name, lokasi: d.lokasi }));
+            payments = {};
+            saveAll();
+            populateLokasiDropdowns();
+            alert(`Import ${newList.length} fasilitator`);
+            if (document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(currentMonth);
+        }
+    }
+    function importPayments(csv) {
+        let lines = csv.split(/\r?\n/).filter(l=>l.trim());
+        for(let i=1;i<lines.length;i++) {
+            let parts = lines[i].split(',').map(s=>s.trim().replace(/^"|"$/g,''));
+            let bulan = parts[0], nama = parts[1], statusRaw = (parts[2]||'').toUpperCase();
+            let isLunas = statusRaw.includes('LUNAS') || statusRaw === '1';
+            let f = facilitators.find(fx => fx.name.toLowerCase() === nama.toLowerCase());
+            if(f && bulan) {
+                if(!payments[bulan]) payments[bulan] = facilitators.map(fx => ({ facilitatorId: fx.id, status: false }));
+                let rec = payments[bulan].find(p => p.facilitatorId === f.id);
+                if(rec) rec.status = isLunas;
+                else payments[bulan].push({ facilitatorId: f.id, status: isLunas });
+            }
+        }
+        saveAll();
+        alert("Import iuran selesai");
+        if(document.querySelector('.tab-btn.active')?.dataset.tab === 'payment') renderPaymentTable(currentMonth);
+    }
+    function resetDefault() {
+        if(confirm("Reset ke data default Magelang?")) {
+            facilitators = DEFAULT_DATA.map((d,idx) => ({ id: idx+1, name: d.name, lokasi: d.lokasi }));
+            payments = {};
+            kasKeluar = [];
+            saveAll();
+            populateLokasiDropdowns();
+            renderPaymentTable(currentMonth);
+            alert("Reset berhasil");
+        }
+    }
+    function downloadCSV(content, filename) {
+        let blob = new Blob(["\uFEFF"+content], {type:"text/csv"});
+        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click(); URL.revokeObjectURL(a.href);
+    }
+
+    // SPREADSHEET INTEGRATION
+    function saveWebAppUrl() {
+        let url = document.getElementById('webAppUrl').value.trim();
+        if (url) {
+            webAppUrl = url;
+            localStorage.setItem(STORAGE.URL, url);
+            document.getElementById('syncStatus').innerHTML = '🔌 Menguji koneksi...';
+            backupToSpreadsheet().then(() => {
+                document.getElementById('syncStatus').innerHTML = '✅ URL tersimpan dan koneksi berhasil.';
+            }).catch(() => {
+                document.getElementById('syncStatus').innerHTML = '⚠️ URL tersimpan tapi gagal koneksi.';
+            });
+        } else {
+            localStorage.removeItem(STORAGE.URL);
+            webAppUrl = '';
+            document.getElementById('syncStatus').innerHTML = 'URL dihapus, backup nonaktif.';
+        }
+    }
+
+    function copyScriptCode() {
+        const scriptCode = `function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  sheet.getRange("A1").setValue(JSON.stringify(data));
+  sheet.getRange("B1").setValue(new Date().toISOString());
+  return ContentService.createTextOutput(JSON.stringify({status: "success"})).setMimeType(ContentService.MimeType.JSON);
+}
+function doGet(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const lastUpdate = sheet.getRange("B1").getValue();
+  return ContentService.createTextOutput(JSON.stringify({lastUpdate: lastUpdate})).setMimeType(ContentService.MimeType.JSON);
+}`;
+        navigator.clipboard.writeText(scriptCode);
+        alert("Kode Apps Script disalin! Buka spreadsheet > Extensions > Apps Script, tempelkan, lalu deploy sebagai Web App.");
+    }
+
+    // ========== INISIALISASI SETELAH LOGIN ==========
+    function initApp() {
+        loadAll();
+        populateLokasiDropdowns();
+        document.getElementById('kasTanggal').value = new Date().toISOString().slice(0,10);
+        webAppUrl = localStorage.getItem(STORAGE.URL) || "";
+        document.getElementById('webAppUrl').value = webAppUrl;
+        fetchLastUpdate();
+        // Event listeners
+        document.getElementById('loadPaymentBtn').addEventListener('click',()=>renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('monthPicker').addEventListener('change',()=>renderPaymentTable(document.getElementById('monthPicker').value));
+        document.getElementById('selectAllBtn').addEventListener('click',()=>selectAll(true));
+        document.getElementById('unselectAllBtn').addEventListener('click',()=>selectAll(false));
+        document.getElementById('confirmSaveBtn').addEventListener('click',applyPending);
+        document.getElementById('cancelChangesBtn').addEventListener('click',cancelPending);
+        document.getElementById('headerCheckbox').addEventListener('change',(e)=>selectAll(e.target.checked));
+        document.getElementById('searchInput').addEventListener('input',()=>renderPaymentTable(currentMonth));
+        document.getElementById('filterLokasiInput').addEventListener('change',()=>renderPaymentTable(currentMonth));
+        document.getElementById('resetFilterBtn').addEventListener('click',()=>{
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterLokasiInput').value = '';
+            renderPaymentTable(currentMonth);
+        });
+        document.getElementById('loadYearRekapBtn').addEventListener('click',()=>renderRekapTahunan(document.getElementById('yearSelect').value));
+        document.getElementById('yearSelect').addEventListener('change',()=>renderRekapTahunan(document.getElementById('yearSelect').value));
+        document.getElementById('exportYearRekapBtn').addEventListener('click',()=>exportRekapTahunanCSV(document.getElementById('yearSelect').value));
+        document.getElementById('searchRekap').addEventListener('input',()=>renderRekapTahunan(document.getElementById('yearSelect').value));
+        document.getElementById('filterLokasiRekap').addEventListener('change',()=>renderRekapTahunan(document.getElementById('yearSelect').value));
+        document.getElementById('resetFilterRekapBtn').addEventListener('click',()=>{
+            document.getElementById('searchRekap').value = '';
+            document.getElementById('filterLokasiRekap').value = '';
+            renderRekapTahunan(document.getElementById('yearSelect').value);
+        });
+        document.getElementById('tambahKasKeluarBtn').addEventListener('click',tambahKasKeluar);
+        document.getElementById('exportKasKeluarBtn').addEventListener('click',exportKasKeluarCSV);
+        document.getElementById('exportAllPaymentsBtn').addEventListener('click',exportAllPayments);
+        document.getElementById('exportAllFacilitatorsBtn').addEventListener('click',exportFacilitators);
+        document.getElementById('importPaymentsFile').addEventListener('change',e=>{if(e.target.files[0]){let r=new FileReader(); r.onload=ev=>{importPayments(ev.target.result); e.target.value='';}; r.readAsText(e.target.files[0]);}});
+        document.getElementById('importFacilitatorFile').addEventListener('change',e=>{if(e.target.files[0]){let r=new FileReader(); r.onload=ev=>{importFacilitators(ev.target.result); e.target.value=''; populateLokasiDropdowns();}; r.readAsText(e.target.files[0]);}});
+        document.getElementById('resetDefaultBtn').addEventListener('click',resetDefault);
+        document.getElementById('saveWebAppUrl').addEventListener('click',saveWebAppUrl);
+        document.getElementById('copyScriptCodeBtn').addEventListener('click',copyScriptCode);
+        // Tab switching
+        let tabs = document.querySelectorAll('.tab-btn');
+        let contents = { payment:document.getElementById('paymentTab'), rekapTahunan:document.getElementById('rekapTahunanTab'), kasKeluarTab:document.getElementById('kasKeluarTab'), batch:document.getElementById('batchTab'), backup:document.getElementById('backupTab') };
+        function switchTab(tab) {
+            Object.values(contents).forEach(c=>c.style.display='none');
+            contents[tab].style.display='block';
+            tabs.forEach(btn=>btn.classList.remove('active'));
+            document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+            if(tab==='payment') renderPaymentTable(document.getElementById('monthPicker').value);
+            if(tab==='rekapTahunan') renderRekapTahunan(document.getElementById('yearSelect').value);
+            if(tab==='kasKeluarTab') renderKasKeluar();
+        }
+        tabs.forEach(btn => btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
+        renderPaymentTable('2026-01');
+        switchTab('payment');
+    }
+
+    // LOGIN HANDLER
+    const loginContainer = document.getElementById('loginContainer');
+    const appContent = document.getElementById('appContent');
+    const passwordInput = document.getElementById('passwordInput');
+    const togglePassword = document.getElementById('togglePassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+
+    togglePassword.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    function doLogin() {
+        if (passwordInput.value === "kasprodamai") {
+            loginContainer.style.display = 'none';
+            appContent.style.display = 'block';
+            initApp();
+        } else {
+            loginError.innerText = 'Password salah! Silakan coba lagi.';
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    }
+    loginBtn.addEventListener('click', doLogin);
+    passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>
